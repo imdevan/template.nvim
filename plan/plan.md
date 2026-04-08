@@ -46,14 +46,14 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - notes: shared helpers reused across all features; keep allocations minimal for memory efficiency
 
 ## Feature 2: Parsing
-  - [ ] 2.1 Implement fts token detection for current line
+  - [x] 2.1 Implement fts token detection for current line
     - notes: must handle feature headers (`## Feature N:`), task lines (`- [ ] N.M`), and subtask lines (`- [ ] N.M.P`)
-    - [ ] 2.1.1 Parse feature line → return `{ type="feature", fn=N }`
-    - [ ] 2.1.2 Parse task line → return `{ type="task", fn=N, tn=M }`
-    - [ ] 2.1.3 Parse subtask line → return `{ type="subtask", fn=N, tn=M, sn=P }`
-  - [ ] 2.2 Implement upward scan to resolve fts context from any line
+    - [x] 2.1.1 Parse feature line → return `{ type="feature", fn=N }`
+    - [x] 2.1.2 Parse task line → return `{ type="task", fn=N, tn=M }`
+    - [x] 2.1.3 Parse subtask line → return `{ type="subtask", fn=N, tn=M, sn=P }`
+  - [x] 2.2 Implement upward scan to resolve fts context from any line
     - notes: used when cursor is on a non-fts line (e.g., a notes line under a task)
-  - [ ] 2.3 Implement full document fts index builder
+  - [x] 2.3 Implement full document fts index builder
     - notes: returns ordered list of all fts entries with line numbers; used by sort and renumber operations
 
 ## Feature 3: Renumbering engine
@@ -142,14 +142,15 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - notes: use plenary.nvim busted wrapper; tests run in headless Neovim
     - [x] 13.1.1 Create `tests/minimal_init.lua` to bootstrap plenary and the plugin
     - [x] 13.1.2 Document local run command in README
-  - [ ] 13.2 Write unit tests for config module
-    - [ ] 13.2.1 Default values are set correctly
-    - [ ] 13.2.2 User opts are deep-merged over defaults
-  - [ ] 13.3 Write unit tests for parsing (Feature 2)
-    - [ ] 13.3.1 Feature line detection
-    - [ ] 13.3.2 Task line detection
-    - [ ] 13.3.3 Subtask line detection
-    - [ ] 13.3.4 Upward scan resolves correct fts context
+  - [x] 13.2 Write unit tests for config module
+    - [x] 13.2.1 Default values are set correctly
+    - [x] 13.2.2 User opts are deep-merged over defaults
+  - [x] 13.3 Write unit tests for parsing (Feature 2)
+    - [x] 13.3.1 Feature line detection
+    - [x] 13.3.2 Task line detection
+    - [x] 13.3.3 Subtask line detection
+    - [x] 13.3.4 Upward scan resolves correct fts context
+    - [x] 13.3.5 build_index returns ordered token list with correct lnum
   - [ ] 13.4 Write unit tests for renumbering engine (Feature 3)
     - [ ] 13.4.1 Push-down increments correct tokens
     - [ ] 13.4.2 Push-up decrements correct tokens
