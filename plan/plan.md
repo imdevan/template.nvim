@@ -57,11 +57,11 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - notes: returns ordered list of all fts entries with line numbers; used by sort and renumber operations
 
 ## Feature 3: Renumbering engine
-  - [ ] 3.1 Implement push-down renumbering
+  - [x] 3.1 Implement push-down renumbering
     - notes: given an insertion point and fts type, increment all affected tokens below
-  - [ ] 3.2 Implement push-up renumbering
+  - [x] 3.2 Implement push-up renumbering
     - notes: given a removal point and fts type, decrement all affected tokens below
-  - [ ] 3.3 Implement full renumber pass
+  - [x] 3.3 Implement full renumber pass
     - notes: resequences all fts tokens from scratch; used after sort or bulk edits
 
 ## Feature 4: Toggle
@@ -151,10 +151,11 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - [x] 13.3.3 Subtask line detection
     - [x] 13.3.4 Upward scan resolves correct fts context
     - [x] 13.3.5 build_index returns ordered token list with correct lnum
-  - [ ] 13.4 Write unit tests for renumbering engine (Feature 3)
-    - [ ] 13.4.1 Push-down increments correct tokens
-    - [ ] 13.4.2 Push-up decrements correct tokens
-    - [ ] 13.4.3 Full renumber pass resequences correctly
+  - [x] 13.4 Write unit tests for renumbering engine (Feature 3)
+    - [x] 13.4.1 Push-down increments correct tokens
+    - [x] 13.4.2 Push-up decrements correct tokens
+    - [x] 13.4.3 Full renumber pass resequences correctly
+    - [x] 13.4.4 Non-fts lines preserved unchanged during full pass
   - [ ] 13.5 Write integration tests for add/remove/move/eject (Features 5–8)
     - notes: each test sets up a buffer with known content, runs the operation, and asserts the resulting buffer state
   - [ ] 13.6 Set up GitHub Actions CI
