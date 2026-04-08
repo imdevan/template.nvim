@@ -1,0 +1,50 @@
+local config = require("task-manager.config")
+
+describe("config", function()
+  before_each(function()
+    config.setup()
+  end)
+
+  describe("defaults", function()
+    it("sets feature token", function()
+      assert.equals("## Feature", config.options.tokens.feature)
+    end)
+
+    it("sets task token", function()
+      assert.equals("- [ ]", config.options.tokens.task)
+    end)
+
+    it("sets subtask token", function()
+      assert.equals("- [ ]", config.options.tokens.subtask)
+    end)
+
+    it("enables keymaps", function()
+      assert.is_true(config.options.keymaps.enabled)
+    end)
+  end)
+
+  describe("deep merge", function()
+    it("overrides a single token without affecting others", function()
+      config.setup({ tokens = { feature = "# FEAT" } })
+      assert.equals("# FEAT", config.options.tokens.feature)
+      assert.equals("- [ ]", config.options.tokens.task)
+      assert.equals("- [ ]", config.options.tokens.subtask)
+    end)
+
+    it("overrides keymaps.enabled", function()
+      config.setup({ keymaps = { enabled = false } })
+      assert.is_false(config.options.keymaps.enabled)
+    end)
+
+    it("does not mutate defaults", function()
+      config.setup({ tokens = { feature = "CHANGED" } })
+      assert.equals("## Feature", config.defaults.tokens.feature)
+    end)
+
+    it("calling setup() with no args restores defaults", function()
+      config.setup({ keymaps = { enabled = false } })
+      config.setup()
+      assert.is_true(config.options.keymaps.enabled)
+    end)
+  end)
+end)
