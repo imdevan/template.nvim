@@ -34,15 +34,15 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
 # v0.1.0
 
 ## Feature 1: Plugin scaffolding
-  - [ ] 1.1 Initialize lazy.nvim-compatible plugin structure
+  - [x] 1.1 Initialize lazy.nvim-compatible plugin structure
     - notes: follow lazy.nvim plugin spec; expose `setup(opts)` entry point
-    - [ ] 1.1.1 Create directory layout (`lua/task-manager/`, `plugin/`, etc.)
-    - [ ] 1.1.2 Write `plugin/task-manager.lua` that calls setup on load
-  - [ ] 1.2 Define default config table
+    - [x] 1.1.1 Create directory layout (`lua/task-manager/`, `plugin/`, etc.)
+    - [x] 1.1.2 Write `plugin/task-manager.lua` that calls setup on load
+  - [x] 1.2 Define default config table
     - notes: fts tokens and keymaps should be overridable via `setup(opts)`
-    - [ ] 1.2.1 Default feature/task/subtask token patterns
-    - [ ] 1.2.2 Default keymap toggle flags (enabled/disabled)
-  - [ ] 1.3 Set up utils module
+    - [x] 1.2.1 Default feature/task/subtask token patterns
+    - [x] 1.2.2 Default keymap toggle flags (enabled/disabled)
+  - [x] 1.3 Set up utils module
     - notes: shared helpers reused across all features; keep allocations minimal for memory efficiency
 
 ## Feature 2: Parsing
@@ -136,3 +136,27 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
   - [ ] 12.1 Display virtual text on each feature line showing `X/Y tasks complete`
     - notes: use `nvim_buf_set_extmark` with `virt_text`; update on every buffer change
   - [ ] 12.2 Optional: expose completion summary in statusline via a public API function
+
+## Feature 13: Testing infrastructure
+  - [x] 13.1 Choose and configure test runner
+    - notes: use plenary.nvim busted wrapper; tests run in headless Neovim
+    - [x] 13.1.1 Create `tests/minimal_init.lua` to bootstrap plenary and the plugin
+    - [x] 13.1.2 Document local run command in README
+  - [ ] 13.2 Write unit tests for config module
+    - [ ] 13.2.1 Default values are set correctly
+    - [ ] 13.2.2 User opts are deep-merged over defaults
+  - [ ] 13.3 Write unit tests for parsing (Feature 2)
+    - [ ] 13.3.1 Feature line detection
+    - [ ] 13.3.2 Task line detection
+    - [ ] 13.3.3 Subtask line detection
+    - [ ] 13.3.4 Upward scan resolves correct fts context
+  - [ ] 13.4 Write unit tests for renumbering engine (Feature 3)
+    - [ ] 13.4.1 Push-down increments correct tokens
+    - [ ] 13.4.2 Push-up decrements correct tokens
+    - [ ] 13.4.3 Full renumber pass resequences correctly
+  - [ ] 13.5 Write integration tests for add/remove/move/eject (Features 5–8)
+    - notes: each test sets up a buffer with known content, runs the operation, and asserts the resulting buffer state
+  - [ ] 13.6 Set up GitHub Actions CI
+    - notes: install stable Neovim, run `nvim --headless -c "PlenaryBustedDirectory tests/"`
+    - [ ] 13.6.1 Create `.github/workflows/ci.yml`
+    - [ ] 13.6.2 Run on push and pull_request to main
