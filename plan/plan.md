@@ -44,6 +44,7 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - [x] 1.2.2 Default keymap toggle flags (enabled/disabled)
   - [x] 1.3 Set up utils module
     - notes: shared helpers reused across all features; keep allocations minimal for memory efficiency
+  - [ ] 1.4 Create just install script that will install the plugin into my local nvim config
 
 ## Feature 2: Parsing
   - [x] 2.1 Implement fts token detection for current line
