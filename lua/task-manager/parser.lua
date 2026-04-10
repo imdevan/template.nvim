@@ -1,6 +1,38 @@
-local utils = require("task-manager.utils")
+local utils  = require("task-manager.utils")
+local config = require("task-manager.config")
 
 local M = {}
+
+-- Module-level pattern cache keyed by template string.
+local _cache = {}
+
+---Return the compiled (pattern, captures) for a template, using a cache.
+---@param  tmpl     string
+---@return string   pattern
+---@return string[] captures
+local function get_pattern(tmpl)
+  if not _cache[tmpl] then
+    local pat, caps = utils.compile_template(tmpl)
+    _cache[tmpl] = { pat, caps }
+  end
+  return _cache[tmpl][1], _cache[tmpl][2]
+end
+
+---Try to match `line` against `tmpl`.  Returns a table of captured values
+---keyed by placeholder name, or nil on no match.
+---@param  line string
+---@param  tmpl string
+---@return table|nil
+local function try_match(line, tmpl)
+  local pat, caps = get_pattern(tmpl)
+  local matches = { line:match(pat) }
+  if matches[1] == nil then return nil end
+  local result = {}
+  for i, name in ipairs(caps) do
+    result[name] = matches[i]
+  end
+  return result
+end
 
 ---Parse a single line and return its fts token, or nil if not an fts line.
 ---@param line string
@@ -10,22 +42,34 @@ local M = {}
 --   { type="task",    fn=N, tn=M }
 --   { type="subtask", fn=N, tn=M, sn=P }
 function M.parse_line(line)
-  -- subtask: "- [ ] N.M.P " or "- [x] N.M.P "
-  local fn, tn, sn = line:match("^%- %[.%] (%d+)%.(%d+)%.(%d+)%f[%s%z]")
-  if fn then
-    return { type = "subtask", fn = tonumber(fn), tn = tonumber(tn), sn = tonumber(sn) }
+  local tokens = config.options.tokens
+
+  -- subtask first (most specific — shares prefix with task)
+  local m = try_match(line, tokens.subtask)
+  if m then
+    return {
+      type = "subtask",
+      fn   = tonumber(m.feature),
+      tn   = tonumber(m.task),
+      sn   = tonumber(m.subtask),
+    }
   end
 
-  -- task: "- [ ] N.M " or "- [x] N.M "
-  fn, tn = line:match("^%- %[.%] (%d+)%.(%d+)%f[%s%z]")
-  if fn then
-    return { type = "task", fn = tonumber(fn), tn = tonumber(tn) }
+  m = try_match(line, tokens.task)
+  if m then
+    return {
+      type = "task",
+      fn   = tonumber(m.feature),
+      tn   = tonumber(m.task),
+    }
   end
 
-  -- feature: "## Feature N:" or "## Feature N " (with anything after)
-  fn = line:match("^## Feature (%d+)[:%s]")
-  if fn then
-    return { type = "feature", fn = tonumber(fn) }
+  m = try_match(line, tokens.feature)
+  if m then
+    return {
+      type = "feature",
+      fn   = tonumber(m.feature),
+    }
   end
 
   return nil

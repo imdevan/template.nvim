@@ -1,5 +1,6 @@
 local utils  = require("task-manager.utils")
 local parser = require("task-manager.parser")
+local config = require("task-manager.config")
 
 local M = {}
 
@@ -8,8 +9,8 @@ local M = {}
 -- ---------------------------------------------------------------------------
 
 ---Rewrite the fts token numbers on a single buffer line in-place.
----Only the numeric tokens in the fts prefix are rewritten; text after the
----prefix is preserved verbatim.
+---Rebuilds the line from the configured template so that custom formats are
+---respected.  The original checkbox state and name text are preserved.
 ---@param bufnr  integer
 ---@param lnum   integer  1-indexed
 ---@param token  table    the parsed token for that line
@@ -17,25 +18,31 @@ local M = {}
 ---@param tn?    integer  new task number   (task / subtask only)
 ---@param sn?    integer  new subtask number (subtask only)
 local function rewrite(bufnr, lnum, token, fn, tn, sn)
-  local line = utils.get_line(bufnr, lnum)
+  local tokens = config.options.tokens
+  local line   = utils.get_line(bufnr, lnum)
 
-  if token.type == "feature" then
-    -- Replace the old feature number, keep everything else
-    line = line:gsub("^(## Feature )%d+", "%1" .. fn, 1)
-
-  elseif token.type == "task" then
-    -- Replace N.M prefix after "- [.] "
-    line = line:gsub("^(%-  ?%[.%] )%d+%.%d+", "%1" .. fn .. "." .. tn, 1)
-
-  elseif token.type == "subtask" then
-    -- Replace N.M.P prefix after "- [.] "
-    line = line:gsub(
-      "^(%-  ?%[.%] )%d+%.%d+%.%d+",
-      "%1" .. fn .. "." .. tn .. "." .. sn, 1
-    )
+  local tmpl
+  if     token.type == "feature" then tmpl = tokens.feature
+  elseif token.type == "task"    then tmpl = tokens.task
+  else                                tmpl = tokens.subtask
   end
 
-  utils.set_line(bufnr, lnum, line)
+  -- Compile pattern and extract named captures from the existing line
+  local pat, caps = utils.compile_template(tmpl)
+  local matches   = { line:match(pat) }
+  local named     = {}
+  for i, cap_name in ipairs(caps) do
+    named[cap_name] = matches[i]
+  end
+
+  -- Preserve the original checkbox character (space or x) for task/subtask
+  local checkbox
+  if token.type == "task" or token.type == "subtask" then
+    checkbox = line:match("%[(.)]")
+  end
+
+  utils.set_line(bufnr, lnum,
+    utils.format_fts(tmpl, fn, tn, sn, named.name or "", checkbox))
 end
 
 -- ---------------------------------------------------------------------------

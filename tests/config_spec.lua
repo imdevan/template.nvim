@@ -7,15 +7,15 @@ describe("config", function()
 
   describe("defaults", function()
     it("sets feature token", function()
-      assert.equals("## Feature", config.options.tokens.feature)
+      assert.equals("## Feature {feature}: {name}", config.options.tokens.feature)
     end)
 
     it("sets task token", function()
-      assert.equals("- [ ]", config.options.tokens.task)
+      assert.equals("- [ ] {feature}.{task} {name}", config.options.tokens.task)
     end)
 
     it("sets subtask token", function()
-      assert.equals("- [ ]", config.options.tokens.subtask)
+      assert.equals("- [ ] {feature}.{task}.{subtask} {name}", config.options.tokens.subtask)
     end)
 
     it("enables keymaps", function()
@@ -25,10 +25,10 @@ describe("config", function()
 
   describe("deep merge", function()
     it("overrides a single token without affecting others", function()
-      config.setup({ tokens = { feature = "# FEAT" } })
-      assert.equals("# FEAT", config.options.tokens.feature)
-      assert.equals("- [ ]", config.options.tokens.task)
-      assert.equals("- [ ]", config.options.tokens.subtask)
+      config.setup({ tokens = { feature = "# FEAT {feature}: {name}" } })
+      assert.equals("# FEAT {feature}: {name}", config.options.tokens.feature)
+      assert.equals("- [ ] {feature}.{task} {name}", config.options.tokens.task)
+      assert.equals("- [ ] {feature}.{task}.{subtask} {name}", config.options.tokens.subtask)
     end)
 
     it("overrides keymaps.enabled", function()
@@ -38,7 +38,7 @@ describe("config", function()
 
     it("does not mutate defaults", function()
       config.setup({ tokens = { feature = "CHANGED" } })
-      assert.equals("## Feature", config.defaults.tokens.feature)
+      assert.equals("## Feature {feature}: {name}", config.defaults.tokens.feature)
     end)
 
     it("calling setup() with no args restores defaults", function()

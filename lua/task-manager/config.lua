@@ -5,18 +5,18 @@ local M = {}
 ---@field keymaps TaskManagerKeymaps
 
 ---@class TaskManagerTokens
----@field feature string  pattern prefix for feature headers
----@field task string     pattern prefix for task lines
----@field subtask string  pattern prefix for subtask lines
+---@field feature string  template for feature header lines; use {feature} and {name}
+---@field task    string  template for task lines; use {feature}, {task}, {name}
+---@field subtask string  template for subtask lines; use {feature}, {task}, {subtask}, {name}
 
 ---@class TaskManagerKeymaps
 ---@field enabled boolean  master switch for all keymaps
 
 M.defaults = {
   tokens = {
-    feature = "## Feature",
-    task    = "- [ ]",
-    subtask = "- [ ]",
+    feature = "## Feature {feature}: {name}",
+    task    = "- [ ] {feature}.{task} {name}",
+    subtask = "- [ ] {feature}.{task}.{subtask} {name}",
   },
   keymaps = {
     enabled = true,
