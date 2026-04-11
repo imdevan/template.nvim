@@ -18,10 +18,8 @@ describe("parser", function()
         assert.equals(3, t.fn)
       end)
 
-      it("parses '## Feature N ' with trailing space", function()
-        local t = parser.parse_line("## Feature 7 Some name")
-        assert.equals("feature", t.type)
-        assert.equals(7, t.fn)
+      it("returns nil for '## Feature N ' without colon (default template requires ':')", function()
+        assert.is_nil(parser.parse_line("## Feature 7 Some name"))
       end)
 
       it("returns nil for a non-feature heading", function()
