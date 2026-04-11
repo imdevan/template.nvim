@@ -183,7 +183,6 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - notes: strip the `- [ ] N.M.P` token prefix, leaving plain text
     - [x] 8.3.1 Add `eject_subtask` function to `eject.lua`
     - [x] 8.3.2 Extract subtask name from token and replace with just the name
-      - notes: butt
     - [x] 8.3.3 Call `push_up` to renumber sibling subtasks below the ejected subtask
     - [x] 8.3.4 Add `eject_subtask_cursor` that works only when cursor is on a subtask line
     - [x] 8.3.5 Register `:TaskEjectSubtask` command in `init.lua`
