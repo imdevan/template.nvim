@@ -220,7 +220,10 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 ## Feature 10: Sort
   - [x] 10.1 Sort document by fts number
     - notes: reorder all feature blocks, then tasks within each feature, then subtasks within each task; run full renumber pass after
-    - [ ] 10.1.1 do not remove content before first feature 
+    - [x] 10.1.1 do not remove content before first feature
+      - [x] 10.1.1.1 Find minimum start_lnum across all features to identify preamble boundary
+      - [x] 10.1.1.2 Extract and preserve all lines before first feature
+      - [x] 10.1.1.3 Add test case for preamble preservation
   - [ ] 10.2 Preserve non-fts lines (notes, blank lines) attached to their parent fts entry during sort
 
 ## Feature 11: Commands & keymaps
