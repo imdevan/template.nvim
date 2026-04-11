@@ -109,8 +109,15 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.3.3 Insert subtask line and trigger push-down
 
 ## Feature 6: Remove fts
-  - [ ] 6.1 Remove feature
+  - [x] 6.1 Remove feature
     - notes: deletes feature header and all its tasks/subtasks; pushes features below up
+    - should work when called from task or sub task of feature
+    - [x] 6.1.6 `remove_feature_cursor` resolves parent feature from task/subtask context
+    - [x] 6.1.1 Create `remove.lua` with `remove_feature(bufnr, lnum)` and `remove_feature_cursor()`
+    - [x] 6.1.2 Delete header + all owned tasks/subtasks + trailing non-fts lines
+    - [x] 6.1.3 Trigger push-up to renumber features below
+    - [x] 6.1.4 Register `:TaskRemoveFeature` command in `init.lua`
+    - [x] 6.1.5 Write unit tests (`tests/remove_spec.lua`)
   - [ ] 6.2 Remove task
     - notes: deletes task line and all its subtasks; pushes sibling tasks up
   - [ ] 6.3 Remove subtask
