@@ -200,8 +200,14 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 9.1.5 Register :TaskGoto command in init.lua
     - [x] 9.1.6 Write unit tests (tests/navigate_spec.lua)
     - [x] 9.1.7 If no task go to parent feature if able
-  - [ ] 9.4 Go to next/previous incomplete entry
+  - [x] 9.4 Go to next/previous incomplete entry
     - notes: cycle through fts tokens in document order
+    - [x] 9.4.1 Create is_incomplete helper to check for unchecked tasks/subtasks
+    - [x] 9.4.2 Implement goto_next_incomplete with wrap support
+    - [x] 9.4.3 Implement goto_prev_incomplete with wrap support
+    - [x] 9.4.4 Add cursor variants that wrap by default
+    - [x] 9.4.5 Register :TaskNextIncomplete and :TaskPrevIncomplete commands
+    - [x] 9.4.6 Write comprehensive tests for both directions and wrapping behavior
   - [ ] 9.4 Go to next/previous complete entry
     - notes: cycle through fts tokens in document order
 

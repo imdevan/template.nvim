@@ -72,6 +72,14 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskGoto", function()
     require("task-manager.navigate").goto_target_prompt()
   end, { desc = "Go to a specific feature, task, or subtask by number (e.g., 3, 3.2, 3.2.1)" })
+
+  vim.api.nvim_create_user_command("TaskNextIncomplete", function()
+    require("task-manager.navigate").goto_next_incomplete_cursor()
+  end, { desc = "Go to the next incomplete (unchecked) task or subtask" })
+
+  vim.api.nvim_create_user_command("TaskPrevIncomplete", function()
+    require("task-manager.navigate").goto_prev_incomplete_cursor()
+  end, { desc = "Go to the previous incomplete (unchecked) task or subtask" })
 end
 
 return M
