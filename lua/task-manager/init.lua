@@ -28,6 +28,10 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskRemoveTask", function()
     require("task-manager.remove").remove_task_cursor()
   end, { desc = "Remove the task under the cursor and all its subtasks" })
+
+  vim.api.nvim_create_user_command("TaskRemoveSubtask", function()
+    require("task-manager.remove").remove_subtask_cursor()
+  end, { desc = "Remove the subtask under the cursor" })
 end
 
 return M

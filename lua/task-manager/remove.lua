@@ -107,6 +107,30 @@ function M.remove_task_cursor()
   M.remove_task(bufnr, task_lnum)
 end
 
+---Remove the subtask at `lnum`, then push-up sibling subtasks within the same task.
+---@param bufnr integer
+---@param lnum  integer  1-indexed line of the subtask
+---@return boolean  false if the line is not a subtask
+function M.remove_subtask(bufnr, lnum)
+  local token = parser.parse_line(utils.get_line(bufnr, lnum))
+  if not token or token.type ~= "subtask" then return false end
+  local fn = token.fn
+  local tn = token.tn
+
+  vim.api.nvim_buf_set_lines(bufnr, lnum - 1, lnum, false, {})
+
+  renumber.push_up(bufnr, lnum - 1, "subtask", fn, tn)
+  return true
+end
+
+---Remove the subtask under the cursor.
+function M.remove_subtask_cursor()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local ctx   = parser.context_at(bufnr, utils.cursor_line())
+  if not ctx or ctx.type ~= "subtask" then return end
+  M.remove_subtask(bufnr, ctx.lnum)
+end
+
 ---Remove the feature containing the cursor.
 ---Works from any line within the feature (header, task, or subtask).
 function M.remove_feature_cursor()
