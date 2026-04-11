@@ -277,3 +277,165 @@ describe("move", function()
     end)
   end)
 end)
+
+describe("move_task", function()
+  local function make_buf(lines)
+    local bufnr = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+    return bufnr
+  end
+
+  describe("move_task_up", function()
+
+    it("returns false when line is not a task", function()
+      local buf = make_buf({ "## Feature 1: Alpha" })
+      assert.is_false(move.move_task_up(buf, 1))
+    end)
+
+    it("returns false when task is already first in its feature", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+      })
+      assert.is_false(move.move_task_up(buf, 2))
+    end)
+
+    it("swaps task with the task above and renumbers", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+      })
+      move.move_task_up(buf, 3)
+      assert.are.same({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task two",
+        "- [ ] 1.2 Task one",
+      }, vim.api.nvim_buf_get_lines(buf, 0, -1, false))
+    end)
+
+    it("moves task with its subtasks as a block", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "- [ ] 1.2 Task two",
+        "  - [ ] 1.2.1 Sub two",
+      })
+      move.move_task_up(buf, 4)
+      assert.are.same({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task two",
+        "  - [ ] 1.1.1 Sub two",
+        "- [ ] 1.2 Task one",
+        "  - [ ] 1.2.1 Sub one",
+      }, vim.api.nvim_buf_get_lines(buf, 0, -1, false))
+    end)
+
+    it("does not move tasks across feature boundaries", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "## Feature 2: Beta",
+        "- [ ] 2.1 Task two",
+      })
+      assert.is_false(move.move_task_up(buf, 4))
+    end)
+
+  end)
+
+  describe("move_task_down", function()
+
+    it("returns false when task is already last in its feature", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+      })
+      assert.is_false(move.move_task_down(buf, 3))
+    end)
+
+    it("swaps task with the task below and renumbers", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+        "- [ ] 1.3 Task three",
+      })
+      move.move_task_down(buf, 2)
+      assert.are.same({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task two",
+        "- [ ] 1.2 Task one",
+        "- [ ] 1.3 Task three",
+      }, vim.api.nvim_buf_get_lines(buf, 0, -1, false))
+    end)
+
+    it("moves task with its subtasks as a block", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "- [ ] 1.2 Task two",
+      })
+      move.move_task_down(buf, 2)
+      assert.are.same({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task two",
+        "- [ ] 1.2 Task one",
+        "  - [ ] 1.2.1 Sub one",
+      }, vim.api.nvim_buf_get_lines(buf, 0, -1, false))
+    end)
+
+    it("does not move tasks across feature boundaries", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "## Feature 2: Beta",
+        "- [ ] 2.1 Task two",
+      })
+      assert.is_false(move.move_task_down(buf, 2))
+    end)
+
+  end)
+
+  describe("cursor variants", function()
+
+    it("move_task_up_cursor works from a subtask line", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+        "  - [ ] 1.2.1 Sub two",
+      })
+      vim.api.nvim_set_current_buf(buf)
+      vim.api.nvim_win_set_cursor(0, { 4, 0 })
+      move.move_task_up_cursor()
+      assert.are.same({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task two",
+        "  - [ ] 1.1.1 Sub two",
+        "- [ ] 1.2 Task one",
+      }, vim.api.nvim_buf_get_lines(buf, 0, -1, false))
+    end)
+
+    it("move_task_down_cursor works from a task line", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+      })
+      vim.api.nvim_set_current_buf(buf)
+      vim.api.nvim_win_set_cursor(0, { 2, 0 })
+      move.move_task_down_cursor()
+      assert.are.same({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task two",
+        "- [ ] 1.2 Task one",
+      }, vim.api.nvim_buf_get_lines(buf, 0, -1, false))
+    end)
+
+  end)
+
+end)
