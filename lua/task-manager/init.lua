@@ -60,6 +60,10 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskEjectFeature", function()
     require("task-manager.eject").eject_feature_cursor()
   end, { desc = "Eject the feature under the cursor (strip fts tokens, leaving plain text)" })
+
+  vim.api.nvim_create_user_command("TaskEjectTask", function()
+    require("task-manager.eject").eject_task_cursor()
+  end, { desc = "Eject the task under the cursor (strip fts tokens, leaving plain text)" })
 end
 
 return M
