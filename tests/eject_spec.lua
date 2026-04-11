@@ -500,4 +500,255 @@ describe("eject", function()
 			}, lines)
 		end)
 	end)
+
+	describe("eject_subtask", function()
+		it("returns false when line is not a subtask", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+			})
+
+			local result = eject.eject_subtask(bufnr, 2)
+			assert.is_false(result)
+		end)
+
+		it("strips subtask token leaving plain text", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+			})
+
+			local result = eject.eject_subtask(bufnr, 3)
+			assert.is_true(result)
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  Subtask one",
+			}, lines)
+		end)
+
+		it("renumbers sibling subtasks below after ejection", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+				"  - [ ] 1.1.2 Subtask two",
+				"  - [ ] 1.1.3 Subtask three",
+			})
+
+			eject.eject_subtask(bufnr, 3)
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  Subtask one",
+				"  - [ ] 1.1.1 Subtask two",
+				"  - [ ] 1.1.2 Subtask three",
+			}, lines)
+		end)
+
+		it("does not affect subtasks in other tasks", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+				"- [ ] 1.2 Task two",
+				"  - [ ] 1.2.1 Subtask two",
+			})
+
+			eject.eject_subtask(bufnr, 3)
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  Subtask one",
+				"- [ ] 1.2 Task two",
+				"  - [ ] 1.2.1 Subtask two",
+			}, lines)
+		end)
+
+		it("preserves indentation", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"    - [ ] 1.1.1 Indented subtask",
+			})
+
+			eject.eject_subtask(bufnr, 3)
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"    Indented subtask",
+			}, lines)
+		end)
+
+		it("preserves checkbox states in ejected subtask", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [x] 1.1.1 Subtask one",
+				"  - [ ] 1.1.2 Subtask two",
+			})
+
+			eject.eject_subtask(bufnr, 3)
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  Subtask one",
+				"  - [ ] 1.1.1 Subtask two",
+			}, lines)
+		end)
+
+		it("ejects last subtask in task without affecting task", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+			})
+
+			eject.eject_subtask(bufnr, 3)
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  Subtask one",
+			}, lines)
+		end)
+
+		it("ejects middle subtask and renumbers correctly", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+				"  - [ ] 1.1.2 Subtask two",
+				"  - [ ] 1.1.3 Subtask three",
+			})
+
+			eject.eject_subtask(bufnr, 4)
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+				"  Subtask two",
+				"  - [ ] 1.1.2 Subtask three",
+			}, lines)
+		end)
+
+		it("does not affect other features or tasks", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: First",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+				"",
+				"## Feature 2: Second",
+				"- [ ] 2.1 Task two",
+			})
+
+			eject.eject_subtask(bufnr, 3)
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: First",
+				"- [ ] 1.1 Task one",
+				"  Subtask one",
+				"",
+				"## Feature 2: Second",
+				"- [ ] 2.1 Task two",
+			}, lines)
+		end)
+	end)
+
+	describe("eject_subtask_cursor", function()
+		it("ejects subtask when cursor is on subtask line", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+				"  - [ ] 1.1.2 Subtask two",
+			})
+
+			vim.api.nvim_set_current_buf(bufnr)
+			vim.api.nvim_win_set_cursor(0, { 3, 0 })
+
+			eject.eject_subtask_cursor()
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  Subtask one",
+				"  - [ ] 1.1.1 Subtask two",
+			}, lines)
+		end)
+
+		it("does nothing when cursor is on task line", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+			})
+
+			vim.api.nvim_set_current_buf(bufnr)
+			vim.api.nvim_win_set_cursor(0, { 2, 0 })
+
+			eject.eject_subtask_cursor()
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+			}, lines)
+		end)
+
+		it("does nothing when cursor is on feature line", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+			})
+
+			vim.api.nvim_set_current_buf(bufnr)
+			vim.api.nvim_win_set_cursor(0, { 1, 0 })
+
+			eject.eject_subtask_cursor()
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"- [ ] 1.1 Task one",
+				"  - [ ] 1.1.1 Subtask one",
+			}, lines)
+		end)
+
+		it("does nothing when cursor is on a non-fts line", function()
+			vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+				"## Feature 1: My Feature",
+				"Some text",
+			})
+
+			vim.api.nvim_set_current_buf(bufnr)
+			vim.api.nvim_win_set_cursor(0, { 2, 0 })
+
+			eject.eject_subtask_cursor()
+
+			local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+			assert.are.same({
+				"## Feature 1: My Feature",
+				"Some text",
+			}, lines)
+		end)
+	end)
 end)

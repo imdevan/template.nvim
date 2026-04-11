@@ -166,4 +166,45 @@ function M.eject_task_cursor()
 	M.eject_task(bufnr, task_lnum)
 end
 
+---Eject a subtask by stripping the subtask token, leaving plain text.
+---Sibling subtasks within the same task are renumbered (pushed up).
+---@param bufnr integer
+---@param lnum integer  line number of the subtask
+---@return boolean  false if the line is not a subtask
+function M.eject_subtask(bufnr, lnum)
+	local token = parser.parse_line(utils.get_line(bufnr, lnum))
+	if not token or token.type ~= "subtask" then
+		return false
+	end
+	local fn = token.fn
+	local tn = token.tn
+
+	-- Extract the subtask name from the current line
+	local line = utils.get_line(bufnr, lnum)
+	local pattern, captures = utils.compile_template(config.options.tokens.subtask)
+	local matches = { line:match(pattern) }
+	local named = {}
+	for i, cap_name in ipairs(captures) do
+		named[cap_name] = matches[i]
+	end
+
+	-- Replace subtask line with just the name
+	local indent = line:match("^(%s*)") or ""
+	utils.set_line(bufnr, lnum, indent .. (named.name or ""))
+
+	-- Renumber sibling subtasks below (push up)
+	renumber.push_up(bufnr, lnum, "subtask", fn, tn)
+	return true
+end
+
+---Eject the subtask under the cursor.
+function M.eject_subtask_cursor()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local ctx = parser.context_at(bufnr, utils.cursor_line())
+	if not ctx or ctx.type ~= "subtask" then
+		return
+	end
+	M.eject_subtask(bufnr, ctx.lnum)
+end
+
 return M
