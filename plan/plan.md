@@ -199,8 +199,7 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 9.1.4 Add goto_target_prompt for user input
     - [x] 9.1.5 Register :TaskGoto command in init.lua
     - [x] 9.1.6 Write unit tests (tests/navigate_spec.lua)
-    - [ ] 9.1.7 If no task go to parent feature if able
-    - [ ] 9.1.8 If no subtask go to parent task if able
+    - [x] 9.1.7 If no task go to parent feature if able
   - [ ] 9.4 Go to next/previous incomplete entry
     - notes: cycle through fts tokens in document order
   - [ ] 9.4 Go to next/previous complete entry
