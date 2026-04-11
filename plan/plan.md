@@ -94,6 +94,7 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.1.1 Prompt for feature name via `vim.ui.input` in `add_feature_cursor()`
     - [x] 5.1.2 Insert header and trigger push-down; tasks/subtasks of shifted features renumbered
     - [x] 5.1.3 Register `:TaskAddFeature` command in `init.lua`
+      - notes: butts
     - [x] 5.1.4 Write unit tests (`tests/add_spec.lua`) covering empty buffer, insert at start/middle/end, and task renumbering
   - [x] 5.2 Add task
     - notes: inserts task under the feature containing the cursor; pushes sibling tasks down
@@ -149,8 +150,15 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 7.2.4 Cursor variants resolve parent task from subtask context
     - [x] 7.2.5 Register `:TaskMoveTaskUp` and `:TaskMoveTaskDown` commands in `init.lua`
     - [x] 7.2.6 Write unit tests covering swap, block-with-subtasks, boundaries, cursor variants
-  - [ ] 7.3 Move subtask up/down within its task
+  - [x] 7.3 Move subtask up/down within its task
     - notes: swap subtask line with adjacent subtask; renumber
+    - [x] 7.3.1 Add `move_subtask_up` and `move_subtask_down` functions to `move.lua`
+    - [x] 7.3.2 Implement simple line swap for subtasks (no trailing content like tasks have)
+    - [x] 7.3.3 Only swap within the same parent task (check fn and tn match)
+    - [x] 7.3.4 Call full renumber pass after swap to fix subtask numbering
+    - [x] 7.3.5 Add cursor variants `move_subtask_up_cursor` and `move_subtask_down_cursor`
+    - [x] 7.3.6 Register `:TaskMoveSubtaskUp` and `:TaskMoveSubtaskDown` commands in `init.lua`
+    - [x] 7.3.7 Write unit tests covering swap up/down, boundary conditions, task isolation, checkbox/indentation preservation
 
 ## Feature 8: Eject fts
   - [ ] 8.1 Eject feature
@@ -193,6 +201,7 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
   - [x] 13.1 Choose and configure test runner
     - notes: use plenary.nvim busted wrapper; tests run in headless Neovim
     - [x] 13.1.1 Create `tests/minimal_init.lua` to bootstrap plenary and the plugin
+      - note: butt
     - [x] 13.1.2 Document local run command in README
   - [x] 13.2 Write unit tests for config module
     - [x] 13.2.1 Default values are set correctly
