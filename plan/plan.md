@@ -44,7 +44,7 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - [x] 1.2.2 Default keymap toggle flags (enabled/disabled)
   - [x] 1.3 Set up utils module
     - notes: shared helpers reused across all features; keep allocations minimal for memory efficiency
-  - [ ] 1.4 Create just install script that will install the plugin into my local nvim config
+  - [x] 1.4 Create just install script that will install the plugin into my local nvim config
 
 ## Feature 2: Parsing
   - [x] 2.1 Implement fts token detection for current line
@@ -52,6 +52,20 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - [x] 2.1.1 Parse feature line → return `{ type="feature", fn=N }`
     - [x] 2.1.2 Parse task line → return `{ type="task", fn=N, tn=M }`
     - [x] 2.1.3 Parse subtask line → return `{ type="subtask", fn=N, tn=M, sn=P }`
+    - [ ] 2.1.4 fts token detection should include the number. see the following sudo code example
+      - use whatever template formatting is recommended with lua
+```
+feature = "## Feature {feature}: {name}",
+task    = "- [ ] {feature}.{task} {name}",
+subtask = "- [ ] {feature}.{task}.{subtask} {name}",
+```
+this would allow the user to use different naming conventions such as
+```
+feature = "# Feature {feature}",
+task    = "- [ ] {feature}.{task}) {name}",
+subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
+```
+
   - [x] 2.2 Implement upward scan to resolve fts context from any line
     - notes: used when cursor is on a non-fts line (e.g., a notes line under a task)
   - [x] 2.3 Implement full document fts index builder
@@ -66,8 +80,11 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - notes: resequences all fts tokens from scratch; used after sort or bulk edits
 
 ## Feature 4: Toggle
-  - [ ] 4.1 Toggle task checkbox (`[ ]` ↔ `[x]`)
+  - [x] 4.1 Toggle task checkbox (`[ ]` ↔ `[x]`)
     - notes: operate on current line; if not a task/subtask line, do nothing
+    - [x] 4.1.1 Create `toggle.lua` with `toggle_checkbox(bufnr, lnum)` and `toggle_checkbox_cursor()`
+    - [x] 4.1.2 Write unit tests (`tests/toggle_spec.lua`): unchecked→checked, checked→unchecked, no-op on feature/plain/blank lines, name preserved
+    - [x] 4.1.3 Fix `config.options` to initialize from defaults on load so parser works without explicit `setup()` call
   - [ ] 4.2 Toggle list item (`-` prefix presence)
     - notes: convert plain line to list item and back
 
