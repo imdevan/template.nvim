@@ -218,8 +218,9 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 9.5.12 Write comprehensive tests for both directions and wrapping behavior
 
 ## Feature 10: Sort
-  - [ ] 10.1 Sort document by fts number
+  - [x] 10.1 Sort document by fts number
     - notes: reorder all feature blocks, then tasks within each feature, then subtasks within each task; run full renumber pass after
+    - [ ] 10.1.1 do not remove content before first feature 
   - [ ] 10.2 Preserve non-fts lines (notes, blank lines) attached to their parent fts entry during sort
 
 ## Feature 11: Commands & keymaps
