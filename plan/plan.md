@@ -125,8 +125,12 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 6.2.3 `remove_task_cursor()` resolves parent task from subtask context
     - [x] 6.2.4 Register `:TaskRemoveTask` command in `init.lua`
     - [x] 6.2.5 Write unit tests
-  - [ ] 6.3 Remove subtask
+  - [x] 6.3 Remove subtask
     - notes: deletes subtask line; pushes sibling subtasks up
+    - [x] 6.3.1 `remove_subtask(bufnr, lnum)` deletes the subtask line and triggers push-up
+    - [x] 6.3.2 `remove_subtask_cursor()` acts only when cursor is on a subtask line
+    - [x] 6.3.3 Register `:TaskRemoveSubtask` command in `init.lua`
+    - [x] 6.3.4 Write unit tests
 
 ## Feature 7: Move fts
   - [ ] 7.1 Move feature up/down
