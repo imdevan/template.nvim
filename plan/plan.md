@@ -52,7 +52,7 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - [x] 2.1.1 Parse feature line → return `{ type="feature", fn=N }`
     - [x] 2.1.2 Parse task line → return `{ type="task", fn=N, tn=M }`
     - [x] 2.1.3 Parse subtask line → return `{ type="subtask", fn=N, tn=M, sn=P }`
-    - [ ] 2.1.4 fts token detection should include the number. see the following sudo code example
+    - [x] 2.1.4 fts token detection should include the number. see the following sudo code example
       - use whatever template formatting is recommended with lua
 ```
 feature = "## Feature {feature}: {name}",
