@@ -68,6 +68,10 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskEjectSubtask", function()
     require("task-manager.eject").eject_subtask_cursor()
   end, { desc = "Eject the subtask under the cursor (strip fts token, leaving plain text)" })
+
+  vim.api.nvim_create_user_command("TaskGoto", function()
+    require("task-manager.navigate").goto_target_prompt()
+  end, { desc = "Go to a specific feature, task, or subtask by number (e.g., 3, 3.2, 3.2.1)" })
 end
 
 return M
