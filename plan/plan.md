@@ -100,10 +100,13 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.2.1 Resolve parent feature from cursor context
     - [x] 5.2.2 Insert task line and trigger push-down
     - [x] 5.2.3 Task should be added at line below current; and use the same indention as the previous  task (or feature if feature is the next fts above the added task)
-  - [ ] 5.3 Add subtask
+  - [x] 5.3 Add subtask
     - notes: inserts subtask under the task containing the cursor; pushes sibling subtasks down
-    - [ ] 5.3.1 Resolve parent task from cursor context
-    - [ ] 5.3.2 Insert subtask line and trigger push-down
+    - when adding sub task: 
+      - if added after a task; indent + 1
+      - when added after another subtask maintain indent of previous sub task
+    - [x] 5.3.2 Resolve parent task from cursor context
+    - [x] 5.3.3 Insert subtask line and trigger push-down
 
 ## Feature 6: Remove fts
   - [ ] 6.1 Remove feature
