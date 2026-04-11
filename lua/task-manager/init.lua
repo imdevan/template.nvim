@@ -56,6 +56,10 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskMoveSubtaskDown", function()
     require("task-manager.move").move_subtask_down_cursor()
   end, { desc = "Move the subtask under the cursor down within its task" })
+
+  vim.api.nvim_create_user_command("TaskEjectFeature", function()
+    require("task-manager.eject").eject_feature_cursor()
+  end, { desc = "Eject the feature under the cursor (strip fts tokens, leaving plain text)" })
 end
 
 return M
