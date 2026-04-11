@@ -41,8 +41,9 @@ local function rewrite(bufnr, lnum, token, fn, tn, sn)
     checkbox = line:match("%[(.)]")
   end
 
+  local indent = line:match("^(%s*)") or ""
   utils.set_line(bufnr, lnum,
-    utils.format_fts(tmpl, fn, tn, sn, named.name or "", checkbox))
+    indent .. utils.format_fts(tmpl, fn, tn, sn, named.name or "", checkbox))
 end
 
 -- ---------------------------------------------------------------------------
