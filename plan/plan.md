@@ -170,10 +170,24 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 8.1.5 Add `eject_feature_cursor` that works from any line within the feature
     - [x] 8.1.6 Register `:TaskEjectFeature` command in `init.lua`
     - [x] 8.1.7 Write unit tests (`tests/eject_spec.lua`) covering ejection, renumbering, indentation, cursor variants
-  - [ ] 8.2 Eject task
+  - [x] 8.2 Eject task
     - notes: strip the `- [ ] N.M` token prefix, leaving plain list item or text
-  - [ ] 8.3 Eject subtask
+    - [x] 8.2.1 Add `eject_task` function to `eject.lua`
+    - [x] 8.2.2 Extract task name from token and replace with just the name
+    - [x] 8.2.3 Find all subtasks belonging to the task and eject them (strip tokens)
+    - [x] 8.2.4 Call `push_up` to renumber sibling tasks below the ejected task
+    - [x] 8.2.5 Add `eject_task_cursor` that works from task or subtask line
+    - [x] 8.2.6 Register `:TaskEjectTask` command in `init.lua`
+    - [x] 8.2.7 Write unit tests covering ejection, renumbering, indentation, cursor variants
+  - [x] 8.3 Eject subtask
     - notes: strip the `- [ ] N.M.P` token prefix, leaving plain text
+    - [x] 8.3.1 Add `eject_subtask` function to `eject.lua`
+    - [x] 8.3.2 Extract subtask name from token and replace with just the name
+      - notes: butt
+    - [x] 8.3.3 Call `push_up` to renumber sibling subtasks below the ejected subtask
+    - [x] 8.3.4 Add `eject_subtask_cursor` that works only when cursor is on a subtask line
+    - [x] 8.3.5 Register `:TaskEjectSubtask` command in `init.lua`
+    - [x] 8.3.6 Write unit tests covering ejection, renumbering, indentation, cursor variants
 
 ## Feature 9: Navigation
   - [ ] 9.1 Go to feature by number
