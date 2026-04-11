@@ -89,10 +89,12 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - notes: convert plain line to list item and back
 
 ## Feature 5: Add fts
-  - [ ] 5.1 Add feature
+  - [x] 5.1 Add feature
     - notes: inserts new feature header at cursor position and pushes all features below down
-    - [ ] 5.1.1 Prompt for feature name
-    - [ ] 5.1.2 Insert header and trigger push-down
+    - [x] 5.1.1 Prompt for feature name via `vim.ui.input` in `add_feature_cursor()`
+    - [x] 5.1.2 Insert header and trigger push-down; tasks/subtasks of shifted features renumbered
+    - [x] 5.1.3 Register `:TaskAddFeature` command in `init.lua`
+    - [x] 5.1.4 Write unit tests (`tests/add_spec.lua`) covering empty buffer, insert at start/middle/end, and task renumbering
   - [ ] 5.2 Add task
     - notes: inserts task under the feature containing the cursor; pushes sibling tasks down
     - [ ] 5.2.1 Resolve parent feature from cursor context
