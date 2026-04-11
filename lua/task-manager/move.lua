@@ -343,6 +343,161 @@ function M.move_task_down_cursor()
 	end
 end
 
+---Find the line range [start, end] of a subtask (subtask line + trailing
+---non-fts lines, stopping before the next subtask or task).
+---@param bufnr integer
+---@param subtask_lnum integer  line number of the subtask
+---@return integer, integer  start_line, end_line
+local function get_subtask_range(bufnr, subtask_lnum)
+	local token = parser.parse_line(utils.get_line(bufnr, subtask_lnum))
+	if not token or token.type ~= "subtask" then
+		return subtask_lnum, subtask_lnum
+	end
+	local fn = token.fn
+	local tn = token.tn
+
+	local last_own = subtask_lnum
+
+	-- Extend to trailing non-fts lines before the next fts token
+	local total = utils.line_count(bufnr)
+	for i = last_own + 1, total do
+		local t = parser.parse_line(utils.get_line(bufnr, i))
+		if t then
+			break
+		end
+		last_own = i
+	end
+
+	return subtask_lnum, last_own
+end
+
+---Move a subtask up by swapping it with the subtask above in the same task.
+---@param bufnr integer
+---@param subtask_lnum integer  line number of the subtask to move
+---@return boolean  false if already at the top of the task
+function M.move_subtask_up(bufnr, subtask_lnum)
+	local token = parser.parse_line(utils.get_line(bufnr, subtask_lnum))
+	if not token or token.type ~= "subtask" then
+		return false
+	end
+	local fn = token.fn
+	local tn = token.tn
+
+	-- Find the subtask above in the same task
+	local index = parser.build_index(bufnr)
+	local prev_subtask_lnum = nil
+	for _, t in ipairs(index) do
+		if t.type == "subtask" and t.fn == fn and t.tn == tn and t.lnum < subtask_lnum then
+			prev_subtask_lnum = t.lnum
+		end
+	end
+
+	if not prev_subtask_lnum then
+		return false
+	end
+
+	-- Get ranges for both subtasks (including trailing notes)
+	local prev_start, prev_end = get_subtask_range(bufnr, prev_subtask_lnum)
+	local curr_start, curr_end = get_subtask_range(bufnr, subtask_lnum)
+
+	-- Extract the text blocks
+	local prev_lines = vim.api.nvim_buf_get_lines(bufnr, prev_start - 1, prev_end, false)
+	local curr_lines = vim.api.nvim_buf_get_lines(bufnr, curr_start - 1, curr_end, false)
+
+	-- Swap the blocks
+	local combined = {}
+	for _, line in ipairs(curr_lines) do
+		table.insert(combined, line)
+	end
+	for _, line in ipairs(prev_lines) do
+		table.insert(combined, line)
+	end
+
+	vim.api.nvim_buf_set_lines(bufnr, prev_start - 1, curr_end, false, combined)
+
+	-- Renumber to fix subtask numbers
+	renumber.renumber(bufnr)
+
+	if vim.api.nvim_get_current_buf() == bufnr then
+		pcall(utils.set_cursor_line, prev_start)
+	end
+	return true
+end
+
+---Move a subtask down by swapping it with the subtask below in the same task.
+---@param bufnr integer
+---@param subtask_lnum integer  line number of the subtask to move
+---@return boolean  false if already at the bottom of the task
+function M.move_subtask_down(bufnr, subtask_lnum)
+	local token = parser.parse_line(utils.get_line(bufnr, subtask_lnum))
+	if not token or token.type ~= "subtask" then
+		return false
+	end
+	local fn = token.fn
+	local tn = token.tn
+
+	-- Find the subtask below in the same task
+	local index = parser.build_index(bufnr)
+	local next_subtask_lnum = nil
+	for _, t in ipairs(index) do
+		if t.type == "subtask" and t.fn == fn and t.tn == tn and t.lnum > subtask_lnum then
+			next_subtask_lnum = t.lnum
+			break
+		end
+	end
+
+	if not next_subtask_lnum then
+		return false
+	end
+
+	-- Get ranges for both subtasks (including trailing notes)
+	local curr_start, curr_end = get_subtask_range(bufnr, subtask_lnum)
+	local next_start, next_end = get_subtask_range(bufnr, next_subtask_lnum)
+
+	-- Extract the text blocks
+	local curr_lines = vim.api.nvim_buf_get_lines(bufnr, curr_start - 1, curr_end, false)
+	local next_lines = vim.api.nvim_buf_get_lines(bufnr, next_start - 1, next_end, false)
+
+	-- Swap the blocks
+	local combined = {}
+	for _, line in ipairs(next_lines) do
+		table.insert(combined, line)
+	end
+	for _, line in ipairs(curr_lines) do
+		table.insert(combined, line)
+	end
+
+	vim.api.nvim_buf_set_lines(bufnr, curr_start - 1, next_end, false, combined)
+
+	-- Renumber to fix subtask numbers
+	renumber.renumber(bufnr)
+
+	if vim.api.nvim_get_current_buf() == bufnr then
+		pcall(utils.set_cursor_line, curr_start + #next_lines)
+	end
+	return true
+end
+
+---Move the subtask under the cursor up.
+function M.move_subtask_up_cursor()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local ctx = parser.context_at(bufnr, utils.cursor_line())
+	if not ctx or ctx.type ~= "subtask" then
+		return
+	end
+	M.move_subtask_up(bufnr, ctx.lnum)
+end
+
+---Move the subtask under the cursor down.
+function M.move_subtask_down_cursor()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local ctx = parser.context_at(bufnr, utils.cursor_line())
+	if not ctx or ctx.type ~= "subtask" then
+		return
+	end
+	M.move_subtask_down(bufnr, ctx.lnum)
+end
+
 ---Move the feature containing the cursor up.
 function M.move_feature_up_cursor()
 	local bufnr = vim.api.nvim_get_current_buf()

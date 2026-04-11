@@ -276,6 +276,7 @@ describe("move", function()
       }, lines)
     end)
   end)
+
 end)
 
 describe("move_task", function()
@@ -436,6 +437,325 @@ describe("move_task", function()
       }, vim.api.nvim_buf_get_lines(buf, 0, -1, false))
     end)
 
+  end)
+
+  describe("move_subtask_up", function()
+    it("swaps subtask with the one above", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      })
+
+      local result = move.move_subtask_up(buf, 4)
+      assert.is_true(result)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask two",
+        "  - [ ] 1.1.2 Subtask one",
+      }, lines)
+    end)
+
+    it("returns false when subtask is already at top", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      })
+
+      local result = move.move_subtask_up(buf, 3)
+      assert.is_false(result)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      }, lines)
+    end)
+
+    it("only swaps within the same task", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "- [ ] 1.2 Task two",
+        "  - [ ] 1.2.1 Subtask two",
+      })
+
+      local result = move.move_subtask_up(buf, 5)
+      assert.is_false(result)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "- [ ] 1.2 Task two",
+        "  - [ ] 1.2.1 Subtask two",
+      }, lines)
+    end)
+
+    it("preserves checkbox states", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [x] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      })
+
+      move.move_subtask_up(buf, 4)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask two",
+        "  - [x] 1.1.2 Subtask one",
+      }, lines)
+    end)
+
+    it("preserves indentation", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "    - [ ] 1.1.1 Subtask one",
+        "    - [ ] 1.1.2 Subtask two",
+      })
+
+      move.move_subtask_up(buf, 4)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "    - [ ] 1.1.1 Subtask two",
+        "    - [ ] 1.1.2 Subtask one",
+      }, lines)
+    end)
+
+    it("moves trailing notes with the subtask", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "    note for subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+        "    note for subtask two",
+      })
+
+      move.move_subtask_up(buf, 5)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask two",
+        "    note for subtask two",
+        "  - [ ] 1.1.2 Subtask one",
+        "    note for subtask one",
+      }, lines)
+    end)
+  end)
+
+  describe("move_subtask_down", function()
+    it("swaps subtask with the one below", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      })
+
+      local result = move.move_subtask_down(buf, 3)
+      assert.is_true(result)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask two",
+        "  - [ ] 1.1.2 Subtask one",
+      }, lines)
+    end)
+
+    it("returns false when subtask is already at bottom", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      })
+
+      local result = move.move_subtask_down(buf, 4)
+      assert.is_false(result)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      }, lines)
+    end)
+
+    it("only swaps within the same task", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "- [ ] 1.2 Task two",
+        "  - [ ] 1.2.1 Subtask two",
+      })
+
+      local result = move.move_subtask_down(buf, 3)
+      assert.is_false(result)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "- [ ] 1.2 Task two",
+        "  - [ ] 1.2.1 Subtask two",
+      }, lines)
+    end)
+
+    it("handles multiple subtasks", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+        "  - [ ] 1.1.3 Subtask three",
+      })
+
+      move.move_subtask_down(buf, 3)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask two",
+        "  - [ ] 1.1.2 Subtask one",
+        "  - [ ] 1.1.3 Subtask three",
+      }, lines)
+    end)
+
+    it("moves trailing notes with the subtask", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "    note for subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      })
+
+      move.move_subtask_down(buf, 3)
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask two",
+        "  - [ ] 1.1.2 Subtask one",
+        "    note for subtask one",
+      }, lines)
+    end)
+  end)
+
+  describe("move_subtask_up_cursor", function()
+    it("moves subtask when cursor is on subtask line", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      })
+
+      vim.api.nvim_set_current_buf(buf)
+      vim.api.nvim_win_set_cursor(0, { 4, 0 })
+
+      move.move_subtask_up_cursor()
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask two",
+        "  - [ ] 1.1.2 Subtask one",
+      }, lines)
+    end)
+
+    it("does nothing when cursor is on task line", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+      })
+
+      vim.api.nvim_set_current_buf(buf)
+      vim.api.nvim_win_set_cursor(0, { 2, 0 })
+
+      move.move_subtask_up_cursor()
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+      }, lines)
+    end)
+  end)
+
+  describe("move_subtask_down_cursor", function()
+    it("moves subtask when cursor is on subtask line", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+        "  - [ ] 1.1.2 Subtask two",
+      })
+
+      vim.api.nvim_set_current_buf(buf)
+      vim.api.nvim_win_set_cursor(0, { 3, 0 })
+
+      move.move_subtask_down_cursor()
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask two",
+        "  - [ ] 1.1.2 Subtask one",
+      }, lines)
+    end)
+
+    it("does nothing when cursor is on feature line", function()
+      local buf = make_buf({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+      })
+
+      vim.api.nvim_set_current_buf(buf)
+      vim.api.nvim_win_set_cursor(0, { 1, 0 })
+
+      move.move_subtask_down_cursor()
+
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      assert.are.same({
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one",
+      }, lines)
+    end)
   end)
 
 end)

@@ -48,6 +48,14 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskMoveTaskDown", function()
     require("task-manager.move").move_task_down_cursor()
   end, { desc = "Move the task under the cursor down within its feature" })
+
+  vim.api.nvim_create_user_command("TaskMoveSubtaskUp", function()
+    require("task-manager.move").move_subtask_up_cursor()
+  end, { desc = "Move the subtask under the cursor up within its task" })
+
+  vim.api.nvim_create_user_command("TaskMoveSubtaskDown", function()
+    require("task-manager.move").move_subtask_down_cursor()
+  end, { desc = "Move the subtask under the cursor down within its task" })
 end
 
 return M
