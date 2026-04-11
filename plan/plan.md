@@ -95,10 +95,11 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.1.2 Insert header and trigger push-down; tasks/subtasks of shifted features renumbered
     - [x] 5.1.3 Register `:TaskAddFeature` command in `init.lua`
     - [x] 5.1.4 Write unit tests (`tests/add_spec.lua`) covering empty buffer, insert at start/middle/end, and task renumbering
-  - [ ] 5.2 Add task
+  - [x] 5.2 Add task
     - notes: inserts task under the feature containing the cursor; pushes sibling tasks down
-    - [ ] 5.2.1 Resolve parent feature from cursor context
-    - [ ] 5.2.2 Insert task line and trigger push-down
+    - [x] 5.2.1 Resolve parent feature from cursor context
+    - [x] 5.2.2 Insert task line and trigger push-down
+    - [x] 5.2.3 Task should be added at line below current; and use the same indention as the previous  task (or feature if feature is the next fts above the added task)
   - [ ] 5.3 Add subtask
     - notes: inserts subtask under the task containing the cursor; pushes sibling subtasks down
     - [ ] 5.3.1 Resolve parent task from cursor context
