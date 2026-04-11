@@ -32,6 +32,14 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskRemoveSubtask", function()
     require("task-manager.remove").remove_subtask_cursor()
   end, { desc = "Remove the subtask under the cursor" })
+
+  vim.api.nvim_create_user_command("TaskMoveFeatureUp", function()
+    require("task-manager.move").move_feature_up_cursor()
+  end, { desc = "Move the feature under the cursor up" })
+
+  vim.api.nvim_create_user_command("TaskMoveFeatureDown", function()
+    require("task-manager.move").move_feature_down_cursor()
+  end, { desc = "Move the feature under the cursor down" })
 end
 
 return M
