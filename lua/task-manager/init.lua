@@ -88,6 +88,10 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskPrevComplete", function()
     require("task-manager.navigate").goto_prev_complete_cursor()
   end, { desc = "Go to the previous complete (checked) task or subtask" })
+
+  vim.api.nvim_create_user_command("TaskSort", function()
+    require("task-manager.sort").sort_document_cursor()
+  end, { desc = "Sort the entire document by fts numbers" })
 end
 
 return M
