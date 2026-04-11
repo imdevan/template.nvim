@@ -48,6 +48,65 @@ function M.remove_feature(bufnr, lnum)
   return true
 end
 
+---Remove the task at `lnum` along with all its subtasks, then push-up sibling
+---tasks within the same feature.
+---@param bufnr integer
+---@param lnum  integer  1-indexed line of the task
+---@return boolean  false if the line is not a task
+function M.remove_task(bufnr, lnum)
+  local token = parser.parse_line(utils.get_line(bufnr, lnum))
+  if not token or token.type ~= "task" then return false end
+  local fn = token.fn
+  local tn = token.tn
+
+  -- Find the last line owned by this task (its subtasks + trailing non-fts lines)
+  local index    = parser.build_index(bufnr)
+  local last_own = lnum
+
+  for _, t in ipairs(index) do
+    if t.lnum <= lnum then goto continue end
+    -- Stop at the next task in the same feature or at any other feature
+    if t.type == "feature" or (t.type == "task" and t.fn == fn) then break end
+    if t.fn == fn and t.tn == tn then last_own = t.lnum end
+    ::continue::
+  end
+
+  -- Extend to cover trailing non-fts lines (notes) before the next fts token
+  local total = utils.line_count(bufnr)
+  for i = last_own + 1, total do
+    local t = parser.parse_line(utils.get_line(bufnr, i))
+    if t then break end
+    last_own = i
+  end
+
+  vim.api.nvim_buf_set_lines(bufnr, lnum - 1, last_own, false, {})
+
+  renumber.push_up(bufnr, lnum - 1, "task", fn)
+  return true
+end
+
+---Remove the task containing the cursor.
+---Works from any line within the task (task line or its subtasks).
+function M.remove_task_cursor()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local ctx   = parser.context_at(bufnr, utils.cursor_line())
+  if not ctx or ctx.type == "feature" then return end
+
+  -- Resolve the task line (cursor may be on a subtask)
+  local task_lnum
+  local fn = ctx.fn
+  local tn = ctx.tn
+  for _, t in ipairs(parser.build_index(bufnr)) do
+    if t.type == "task" and t.fn == fn and t.tn == tn then
+      task_lnum = t.lnum
+      break
+    end
+  end
+
+  if not task_lnum then return end
+  M.remove_task(bufnr, task_lnum)
+end
+
 ---Remove the feature containing the cursor.
 ---Works from any line within the feature (header, task, or subtask).
 function M.remove_feature_cursor()
