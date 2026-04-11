@@ -118,8 +118,13 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 6.1.3 Trigger push-up to renumber features below
     - [x] 6.1.4 Register `:TaskRemoveFeature` command in `init.lua`
     - [x] 6.1.5 Write unit tests (`tests/remove_spec.lua`)
-  - [ ] 6.2 Remove task
+  - [x] 6.2 Remove task
     - notes: deletes task line and all its subtasks; pushes sibling tasks up
+    - [x] 6.2.1 `remove_task(bufnr, lnum)` deletes task + subtasks + trailing non-fts lines
+    - [x] 6.2.2 Trigger push-up to renumber sibling tasks
+    - [x] 6.2.3 `remove_task_cursor()` resolves parent task from subtask context
+    - [x] 6.2.4 Register `:TaskRemoveTask` command in `init.lua`
+    - [x] 6.2.5 Write unit tests
   - [ ] 6.3 Remove subtask
     - notes: deletes subtask line; pushes sibling subtasks up
 
