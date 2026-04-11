@@ -20,6 +20,10 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskAddSubtask", function()
     require("task-manager.add").add_subtask_cursor()
   end, { desc = "Prompt for a name and insert a new subtask under the task at the cursor" })
+
+  vim.api.nvim_create_user_command("TaskRemoveFeature", function()
+    require("task-manager.remove").remove_feature_cursor()
+  end, { desc = "Remove the feature under the cursor and all its tasks/subtasks" })
 end
 
 return M
