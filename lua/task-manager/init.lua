@@ -12,6 +12,14 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskAddFeature", function()
     require("task-manager.add").add_feature_cursor()
   end, { desc = "Prompt for a name and insert a new feature at the cursor line" })
+
+  vim.api.nvim_create_user_command("TaskAddTask", function()
+    require("task-manager.add").add_task_cursor()
+  end, { desc = "Prompt for a name and insert a new task under the feature at the cursor" })
+
+  vim.api.nvim_create_user_command("TaskAddSubtask", function()
+    require("task-manager.add").add_subtask_cursor()
+  end, { desc = "Prompt for a name and insert a new subtask under the task at the cursor" })
 end
 
 return M
