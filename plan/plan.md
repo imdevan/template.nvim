@@ -65,11 +65,11 @@ feature = "# Feature {feature}",
 task    = "- [ ] {feature}.{task}) {name}",
 subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 ```
-
   - [x] 2.2 Implement upward scan to resolve fts context from any line
     - notes: used when cursor is on a non-fts line (e.g., a notes line under a task)
   - [x] 2.3 Implement full document fts index builder
     - notes: returns ordered list of all fts entries with line numbers; used by sort and renumber operations
+    - [ ] 2.4 config options for line after feature; line after task; and line after subtask
 
 ## Feature 3: Renumbering engine
   - [x] 3.1 Implement push-down renumbering
