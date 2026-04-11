@@ -80,6 +80,14 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskPrevIncomplete", function()
     require("task-manager.navigate").goto_prev_incomplete_cursor()
   end, { desc = "Go to the previous incomplete (unchecked) task or subtask" })
+
+  vim.api.nvim_create_user_command("TaskNextComplete", function()
+    require("task-manager.navigate").goto_next_complete_cursor()
+  end, { desc = "Go to the next complete (checked) task or subtask" })
+
+  vim.api.nvim_create_user_command("TaskPrevComplete", function()
+    require("task-manager.navigate").goto_prev_complete_cursor()
+  end, { desc = "Go to the previous complete (checked) task or subtask" })
 end
 
 return M

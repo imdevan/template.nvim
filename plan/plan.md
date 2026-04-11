@@ -208,8 +208,14 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 9.4.4 Add cursor variants that wrap by default
     - [x] 9.4.5 Register :TaskNextIncomplete and :TaskPrevIncomplete commands
     - [x] 9.4.6 Write comprehensive tests for both directions and wrapping behavior
-  - [ ] 9.4 Go to next/previous complete entry
+  - [x] 9.5 Go to next/previous complete entry
     - notes: cycle through fts tokens in document order
+    - [x] 9.5.7 Create is_complete helper to check for checked tasks/subtasks
+    - [x] 9.5.8 Implement goto_next_complete with wrap support
+    - [x] 9.5.9 Implement goto_prev_complete with wrap support
+    - [x] 9.5.10 Add cursor variants that wrap by default
+    - [x] 9.5.11 Register :TaskNextComplete and :TaskPrevComplete commands
+    - [x] 9.5.12 Write comprehensive tests for both directions and wrapping behavior
 
 ## Feature 10: Sort
   - [ ] 10.1 Sort document by fts number

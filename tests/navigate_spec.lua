@@ -429,4 +429,218 @@ describe("navigate", function()
       vim.api.nvim_buf_delete(bufnr, { force = true })
     end)
   end)
+
+  describe("goto_next_complete", function()
+    it("jumps to the next checked task", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one (unchecked)",
+        "- [x] 1.2 Task two (checked)",
+        "- [x] 1.3 Task three (checked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      -- Start from line 1, should jump to line 3 (first checked)
+      local result = navigate.goto_next_complete(bufnr, 1, false)
+      assert.is_true(result)
+      
+      local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+      assert.equals(3, cursor_line)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+
+    it("jumps to the next checked subtask", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Subtask one (unchecked)",
+        "  - [x] 1.1.2 Subtask two (checked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      -- Start from line 2, should jump to line 4 (checked subtask)
+      local result = navigate.goto_next_complete(bufnr, 2, false)
+      assert.is_true(result)
+      
+      local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+      assert.equals(4, cursor_line)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+
+    it("skips feature lines (they don't have checkboxes)", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "## Feature 2: Second",
+        "- [x] 2.1 Task one (checked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      -- Start from line 1, should skip feature 2 and jump to checked task
+      local result = navigate.goto_next_complete(bufnr, 1, false)
+      assert.is_true(result)
+      
+      local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+      assert.equals(3, cursor_line)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+
+    it("wraps around to the beginning when enabled", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [x] 1.1 Task one (checked)",
+        "- [ ] 1.2 Task two (unchecked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      -- Start from line 3 (last line), with wrap should go to line 2
+      local result = navigate.goto_next_complete(bufnr, 3, true)
+      assert.is_true(result)
+      
+      local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+      assert.equals(2, cursor_line)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+
+    it("returns false when no complete tasks exist", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one (unchecked)",
+        "- [ ] 1.2 Task two (unchecked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      local result = navigate.goto_next_complete(bufnr, 1, true)
+      assert.is_false(result)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+
+    it("does not wrap when wrap is disabled", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [x] 1.1 Task one (checked)",
+        "- [ ] 1.2 Task two (unchecked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      -- Start from line 3, without wrap should return false
+      local result = navigate.goto_next_complete(bufnr, 3, false)
+      assert.is_false(result)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+  end)
+
+  describe("goto_prev_complete", function()
+    it("jumps to the previous checked task", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [x] 1.1 Task one (checked)",
+        "- [x] 1.2 Task two (checked)",
+        "- [ ] 1.3 Task three (unchecked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      -- Start from line 4, should jump to line 3 (previous checked)
+      local result = navigate.goto_prev_complete(bufnr, 4, false)
+      assert.is_true(result)
+      
+      local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+      assert.equals(3, cursor_line)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+
+    it("jumps to the previous checked subtask", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one",
+        "  - [x] 1.1.1 Subtask one (checked)",
+        "  - [ ] 1.1.2 Subtask two (unchecked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      -- Start from line 4, should jump to line 3 (checked subtask)
+      local result = navigate.goto_prev_complete(bufnr, 4, false)
+      assert.is_true(result)
+      
+      local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+      assert.equals(3, cursor_line)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+
+    it("wraps around to the end when enabled", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one (unchecked)",
+        "- [x] 1.2 Task two (checked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      -- Start from line 1 (first line), with wrap should go to line 3
+      local result = navigate.goto_prev_complete(bufnr, 1, true)
+      assert.is_true(result)
+      
+      local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+      assert.equals(3, cursor_line)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+
+    it("returns false when no complete tasks exist", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one (unchecked)",
+        "- [ ] 1.2 Task two (unchecked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      local result = navigate.goto_prev_complete(bufnr, 3, true)
+      assert.is_false(result)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+
+    it("does not wrap when wrap is disabled", function()
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
+        "## Feature 1: First",
+        "- [ ] 1.1 Task one (unchecked)",
+        "- [x] 1.2 Task two (checked)",
+      })
+      
+      vim.api.nvim_set_current_buf(bufnr)
+      
+      -- Start from line 1, without wrap should return false
+      local result = navigate.goto_prev_complete(bufnr, 1, false)
+      assert.is_false(result)
+      
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end)
+  end)
 end)
