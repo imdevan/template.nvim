@@ -189,13 +189,13 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 8.3.6 Write unit tests covering ejection, renumbering, indentation, cursor variants
 
 ## Feature 9: Navigation
-  - [ ] 9.1 Go to feature by number
-    - notes: jump cursor to the feature header line
-  - [ ] 9.2 Go to task by number (N.M)
-    - notes: jump cursor to the task line
-  - [ ] 9.3 Go to subtask by number (N.M.P)
-    - notes: jump cursor to the subtask line
-  - [ ] 9.4 Go to next/previous fts entry
+  - [ ] 9.1 Go to task
+    - `#` (no decimal) - go to feature line
+    - `#.#` - go to task 
+    - `#.#.#` - go to subtask
+  - [ ] 9.4 Go to next/previous incomplete entry
+    - notes: cycle through fts tokens in document order
+  - [ ] 9.4 Go to next/previous complete entry
     - notes: cycle through fts tokens in document order
 
 ## Feature 10: Sort
