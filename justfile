@@ -23,3 +23,10 @@ install:
 
     echo "Installed: $SPEC"
     echo "Restart Neovim (or run :Lazy reload task-manager.nvim) to activate."
+
+reinstall:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    SPEC="$HOME/.config/nvim/lua/plugins/task-manager.lua"
+    rm -f "$SPEC"
+    just install
