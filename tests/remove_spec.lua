@@ -154,4 +154,125 @@ describe("remove", function()
 
   end)
 
+  describe("remove_task", function()
+
+    it("returns false when line is not a task", function()
+      local buf = make_buf({ "## Feature 1: Alpha" })
+      assert.is_false(remove.remove_task(buf, 1))
+    end)
+
+    it("removes a task with no subtasks", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+      })
+      remove.remove_task(buf, 2)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task two",   lines[2])
+    end)
+
+    it("removes a task and all its subtasks", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "  - [ ] 1.1.2 Sub two",
+        "- [ ] 1.2 Task two",
+      })
+      remove.remove_task(buf, 2)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task two",   lines[2])
+    end)
+
+    it("renumbers sibling tasks after removal", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+        "- [ ] 1.3 Task three",
+      })
+      remove.remove_task(buf, 2)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",   lines[1])
+      assert.equals("- [ ] 1.1 Task two",    lines[2])
+      assert.equals("- [ ] 1.2 Task three",  lines[3])
+    end)
+
+    it("renumbers subtasks of sibling tasks after removal", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+        "  - [ ] 1.2.1 Sub one",
+      })
+      remove.remove_task(buf, 2)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",    lines[1])
+      assert.equals("- [ ] 1.1 Task two",     lines[2])
+      assert.equals("  - [ ] 1.1.1 Sub one",  lines[3])
+    end)
+
+    it("only affects tasks in the same feature", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "## Feature 2: Beta",
+        "- [ ] 2.1 Task two",
+        "- [ ] 2.2 Task three",
+      })
+      remove.remove_task(buf, 4)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",   lines[1])
+      assert.equals("- [ ] 1.1 Task one",    lines[2])
+      assert.equals("## Feature 2: Beta",    lines[3])
+      assert.equals("- [ ] 2.1 Task three",  lines[4])
+    end)
+
+    it("also removes trailing non-fts lines belonging to the task", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  notes: something",
+        "- [ ] 1.2 Task two",
+      })
+      remove.remove_task(buf, 2)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task two",   lines[2])
+    end)
+
+  end)
+
+  describe("remove_task_cursor", function()
+
+    it("removes task when cursor is on the task line", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+      })
+      with_cursor(buf, 2, function() remove.remove_task_cursor() end)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task two",   lines[2])
+    end)
+
+    it("removes parent task when cursor is on a subtask line", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "- [ ] 1.2 Task two",
+      })
+      with_cursor(buf, 3, function() remove.remove_task_cursor() end)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task two",   lines[2])
+    end)
+
+  end)
+
 end)
