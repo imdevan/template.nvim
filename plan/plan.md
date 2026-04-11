@@ -133,8 +133,14 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 6.3.4 Write unit tests
 
 ## Feature 7: Move fts
-  - [ ] 7.1 Move feature up/down
+  - [x] 7.1 Move feature up/down
     - notes: swap feature block (header + all tasks/subtasks) with adjacent feature; renumber both
+    - [x] 7.1.1 Create `move.lua` with `move_feature_up`, `move_feature_down`, and cursor variants
+    - [x] 7.1.2 Implement feature range detection to find all lines belonging to a feature
+    - [x] 7.1.3 Swap feature blocks and add blank line separator between features
+    - [x] 7.1.4 Call full renumber pass after swap to fix all numbering
+    - [x] 7.1.5 Register `:TaskMoveFeatureUp` and `:TaskMoveFeatureDown` commands in `init.lua`
+    - [x] 7.1.6 Write unit tests (`tests/move_spec.lua`) covering swap up/down, boundary conditions, cursor variants
   - [ ] 7.2 Move task up/down within its feature
     - notes: swap task block (task + all subtasks) with adjacent task; renumber
   - [ ] 7.3 Move subtask up/down within its task
