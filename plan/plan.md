@@ -141,8 +141,14 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 7.1.4 Call full renumber pass after swap to fix all numbering
     - [x] 7.1.5 Register `:TaskMoveFeatureUp` and `:TaskMoveFeatureDown` commands in `init.lua`
     - [x] 7.1.6 Write unit tests (`tests/move_spec.lua`) covering swap up/down, boundary conditions, cursor variants
-  - [ ] 7.2 Move task up/down within its feature
+  - [x] 7.2 Move task up/down within its feature
     - notes: swap task block (task + all subtasks) with adjacent task; renumber
+    - [x] 7.2.1 `get_task_range` helper finds task line + subtasks + trailing non-fts lines
+    - [x] 7.2.2 `move_task_up/down` swap adjacent task blocks and call full renumber
+    - [x] 7.2.3 Boundary guards: no-op at top/bottom of feature; no crossing feature boundaries
+    - [x] 7.2.4 Cursor variants resolve parent task from subtask context
+    - [x] 7.2.5 Register `:TaskMoveTaskUp` and `:TaskMoveTaskDown` commands in `init.lua`
+    - [x] 7.2.6 Write unit tests covering swap, block-with-subtasks, boundaries, cursor variants
   - [ ] 7.3 Move subtask up/down within its task
     - notes: swap subtask line with adjacent subtask; renumber
 
