@@ -161,8 +161,15 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 7.3.7 Write unit tests covering swap up/down, boundary conditions, task isolation, checkbox/indentation preservation
 
 ## Feature 8: Eject fts
-  - [ ] 8.1 Eject feature
+  - [x] 8.1 Eject feature
     - notes: strip the `## Feature N:` token, leaving plain heading text; push features above/below up
+    - [x] 8.1.1 Create `eject.lua` with `eject_feature` function
+    - [x] 8.1.2 Extract feature name from token and replace with plain heading (`## Name`)
+    - [x] 8.1.3 Find all tasks and subtasks belonging to the feature and eject them (strip tokens)
+    - [x] 8.1.4 Call `push_up` to renumber features below the ejected feature
+    - [x] 8.1.5 Add `eject_feature_cursor` that works from any line within the feature
+    - [x] 8.1.6 Register `:TaskEjectFeature` command in `init.lua`
+    - [x] 8.1.7 Write unit tests (`tests/eject_spec.lua`) covering ejection, renumbering, indentation, cursor variants
   - [ ] 8.2 Eject task
     - notes: strip the `- [ ] N.M` token prefix, leaving plain list item or text
   - [ ] 8.3 Eject subtask
