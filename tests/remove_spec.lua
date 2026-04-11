@@ -275,4 +275,89 @@ describe("remove", function()
 
   end)
 
+  describe("remove_subtask", function()
+
+    it("returns false when line is not a subtask", function()
+      local buf = make_buf({ "- [ ] 1.1 Task one" })
+      assert.is_false(remove.remove_subtask(buf, 1))
+    end)
+
+    it("removes a single subtask", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+      })
+      remove.remove_subtask(buf, 3)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task one",   lines[2])
+      assert.equals(2, #lines)
+    end)
+
+    it("renumbers sibling subtasks after removal", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "  - [ ] 1.1.2 Sub two",
+        "  - [ ] 1.1.3 Sub three",
+      })
+      remove.remove_subtask(buf, 3)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",    lines[1])
+      assert.equals("- [ ] 1.1 Task one",     lines[2])
+      assert.equals("  - [ ] 1.1.1 Sub two",  lines[3])
+      assert.equals("  - [ ] 1.1.2 Sub three",lines[4])
+    end)
+
+    it("only affects subtasks in the same task", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "- [ ] 1.2 Task two",
+        "  - [ ] 1.2.1 Sub two",
+        "  - [ ] 1.2.2 Sub three",
+      })
+      remove.remove_subtask(buf, 3)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",    lines[1])
+      assert.equals("- [ ] 1.1 Task one",     lines[2])
+      assert.equals("- [ ] 1.2 Task two",     lines[3])
+      assert.equals("  - [ ] 1.2.1 Sub two",  lines[4])
+      assert.equals("  - [ ] 1.2.2 Sub three",lines[5])
+    end)
+
+  end)
+
+  describe("remove_subtask_cursor", function()
+
+    it("removes subtask when cursor is on the subtask line", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "  - [ ] 1.1.2 Sub two",
+      })
+      with_cursor(buf, 3, function() remove.remove_subtask_cursor() end)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",    lines[1])
+      assert.equals("- [ ] 1.1 Task one",     lines[2])
+      assert.equals("  - [ ] 1.1.1 Sub two",  lines[3])
+    end)
+
+    it("does nothing when cursor is on a task line", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+      })
+      with_cursor(buf, 2, function() remove.remove_subtask_cursor() end)
+      local lines = get_lines(buf)
+      assert.equals(3, #lines)
+    end)
+
+  end)
+
 end)
