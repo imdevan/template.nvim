@@ -24,7 +24,7 @@ M.defaults = {
 }
 
 ---@type TaskManagerConfig
-M.options = {}
+M.options = vim.tbl_deep_extend("force", {}, M.defaults)
 
 ---Merge user opts over defaults and store in M.options
 ---@param opts? TaskManagerConfig
