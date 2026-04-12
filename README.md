@@ -79,3 +79,17 @@ All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disa
 | `<leader>tN` | Next complete |
 | `<leader>tP` | Prev complete |
 | `<leader>tS` | Sort document |
+
+## Lualine
+
+`require("task-manager.statusline").summary()` returns a formatted string like `󰄲 6/7` for the current buffer (empty string when no tasks exist).
+
+```lua
+require("lualine").setup({
+  sections = {
+    lualine_x = {
+      { require("task-manager.statusline").summary },
+    },
+  },
+})
+```
