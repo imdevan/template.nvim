@@ -69,7 +69,10 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - notes: used when cursor is on a non-fts line (e.g., a notes line under a task)
   - [x] 2.3 Implement full document fts index builder
     - notes: returns ordered list of all fts entries with line numbers; used by sort and renumber operations
-    - [ ] 2.4 config options for line after feature; line after task; and line after subtask
+  - [x] 2.4 config options for line after feature; line after task; and line after subtask
+    - [x] 2.4.1 Add `spacing.after_feature`, `spacing.after_task`, `spacing.after_subtask` (integer, default 0) to `config.lua` defaults
+    - [x] 2.4.2 Apply spacing in `add.lua` after each fts insertion (`add_feature`, `add_task`, `add_subtask`)
+    - [x] 2.4.3 Add config tests for spacing defaults and override
 
 ## Feature 3: Renumbering engine
   - [x] 3.1 Implement push-down renumbering
@@ -78,16 +81,12 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - notes: given a removal point and fts type, decrement all affected tokens below
   - [x] 3.3 Implement full renumber pass
     - notes: resequences all fts tokens from scratch; used after sort or bulk edits
-
 ## Feature 4: Toggle
   - [x] 4.1 Toggle task checkbox (`[x]` ↔ `[x]`)
     - notes: operate on current line; if not a task/subtask line, do nothing
     - [x] 4.1.1 Create `toggle.lua` with `toggle_checkbox(bufnr, lnum)` and `toggle_checkbox_cursor()`
     - [x] 4.1.2 Write unit tests (`tests/toggle_spec.lua`): unchecked→checked, checked→unchecked, no-op on feature/plain/blank lines, name preserved
     - [x] 4.1.3 Fix `config.options` to initialize from defaults on load so parser works without explicit `setup()` call
-  - [ ] 4.2 Toggle list item (`-` prefix presence)
-    - notes: convert plain line to list item and back
-
 ## Feature 5: Add fts
   - [x] 5.1 Add feature
     - notes: inserts new feature header at cursor position and pushes all features below down
