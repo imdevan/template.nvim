@@ -92,6 +92,10 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("TaskSort", function()
     require("task-manager.sort").sort_document_cursor()
   end, { desc = "Sort the entire document by fts numbers" })
+
+  vim.api.nvim_create_user_command("TaskShadowAttach", function()
+    require("task-manager.shadow").attach(vim.api.nvim_get_current_buf())
+  end, { desc = "Attach shadow virtual text (completion counts) to the current buffer" })
 end
 
 return M
