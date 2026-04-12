@@ -80,7 +80,7 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - notes: resequences all fts tokens from scratch; used after sort or bulk edits
 
 ## Feature 4: Toggle
-  - [x] 4.1 Toggle task checkbox (`[ ]` ↔ `[x]`)
+  - [x] 4.1 Toggle task checkbox (`[x]` ↔ `[x]`)
     - notes: operate on current line; if not a task/subtask line, do nothing
     - [x] 4.1.1 Create `toggle.lua` with `toggle_checkbox(bufnr, lnum)` and `toggle_checkbox_cursor()`
     - [x] 4.1.2 Write unit tests (`tests/toggle_spec.lua`): unchecked→checked, checked→unchecked, no-op on feature/plain/blank lines, name preserved
@@ -106,19 +106,19 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - when adding sub task: 
       - if added after a task; indent + 1
       - when added after another subtask maintain indent of previous sub task
-    - [x] 5.3.2 Resolve parent task from cursor context
-    - [x] 5.3.3 Insert subtask line and trigger push-down
+    - [x] 5.3.1 Resolve parent task from cursor context
+    - [x] 5.3.2 Insert subtask line and trigger push-down
 
 ## Feature 6: Remove fts
   - [x] 6.1 Remove feature
     - notes: deletes feature header and all its tasks/subtasks; pushes features below up
     - should work when called from task or sub task of feature
-    - [x] 6.1.6 `remove_feature_cursor` resolves parent feature from task/subtask context
     - [x] 6.1.1 Create `remove.lua` with `remove_feature(bufnr, lnum)` and `remove_feature_cursor()`
     - [x] 6.1.2 Delete header + all owned tasks/subtasks + trailing non-fts lines
     - [x] 6.1.3 Trigger push-up to renumber features below
     - [x] 6.1.4 Register `:TaskRemoveFeature` command in `init.lua`
     - [x] 6.1.5 Write unit tests (`tests/remove_spec.lua`)
+    - [x] 6.1.6 `remove_feature_cursor` resolves parent feature from task/subtask context
   - [x] 6.2 Remove task
     - notes: deletes task line and all its subtasks; pushes sibling tasks up
     - [x] 6.2.1 `remove_task(bufnr, lnum)` deletes task + subtasks + trailing non-fts lines
@@ -200,34 +200,35 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 9.1.5 Register :TaskGoto command in init.lua
     - [x] 9.1.6 Write unit tests (tests/navigate_spec.lua)
     - [x] 9.1.7 If no task go to parent feature if able
-  - [x] 9.4 Go to next/previous incomplete entry
+  - [x] 9.2 Go to next/previous incomplete entry
     - notes: cycle through fts tokens in document order
-    - [x] 9.4.1 Create is_incomplete helper to check for unchecked tasks/subtasks
-    - [x] 9.4.2 Implement goto_next_incomplete with wrap support
-    - [x] 9.4.3 Implement goto_prev_incomplete with wrap support
-    - [x] 9.4.4 Add cursor variants that wrap by default
-    - [x] 9.4.5 Register :TaskNextIncomplete and :TaskPrevIncomplete commands
-    - [x] 9.4.6 Write comprehensive tests for both directions and wrapping behavior
-  - [x] 9.5 Go to next/previous complete entry
+    - [x] 9.2.1 Create is_incomplete helper to check for unchecked tasks/subtasks
+    - [x] 9.2.2 Implement goto_next_incomplete with wrap support
+    - [x] 9.2.3 Implement goto_prev_incomplete with wrap support
+    - [x] 9.2.4 Add cursor variants that wrap by default
+    - [x] 9.2.5 Register :TaskNextIncomplete and :TaskPrevIncomplete commands
+    - [x] 9.2.6 Write comprehensive tests for both directions and wrapping behavior
+  - [x] 9.3 Go to next/previous complete entry
     - notes: cycle through fts tokens in document order
-    - [x] 9.5.7 Create is_complete helper to check for checked tasks/subtasks
-    - [x] 9.5.8 Implement goto_next_complete with wrap support
-    - [x] 9.5.9 Implement goto_prev_complete with wrap support
-    - [x] 9.5.10 Add cursor variants that wrap by default
-    - [x] 9.5.11 Register :TaskNextComplete and :TaskPrevComplete commands
-    - [x] 9.5.12 Write comprehensive tests for both directions and wrapping behavior
+    - [x] 9.3.1 Create is_complete helper to check for checked tasks/subtasks
+    - [x] 9.3.2 Implement goto_next_complete with wrap support
+    - [x] 9.3.3 Implement goto_prev_complete with wrap support
+    - [x] 9.3.4 Add cursor variants that wrap by default
+    - [x] 9.3.5 Register :TaskNextComplete and :TaskPrevComplete commands
+    - [x] 9.3.6 Write comprehensive tests for both directions and wrapping behavior
 
 ## Feature 10: Sort
   - [x] 10.1 Sort document by fts number
     - notes: reorder all feature blocks, then tasks within each feature, then subtasks within each task; run full renumber pass after
-    - [x] 10.1.1 do not remove content before first feature
-      - [x] 10.1.1.1 Find minimum start_lnum across all features to identify preamble boundary
-      - [x] 10.1.1.2 Extract and preserve all lines before first feature
-      - [x] 10.1.1.3 Add test case for preamble preservation
-  - [ ] 10.2 Preserve non-fts lines (notes, blank lines) attached to their parent fts entry during sort
+  - [x] 10.2 do not remove content before first feature
+    - [x] 10.2.1 Find minimum start_lnum across all features to identify preamble boundary
+    - [x] 10.2.2 Extract and preserve all lines before first feature
+    - [x] 10.2.3 Add test case for preamble preservation
+  - [x] 10.3 Preserve non-fts lines (notes, blank lines) attached to their parent fts entry during sort
+    - [x] 10.3.1 preserve content after features as well
 
 ## Feature 11: Commands & keymaps
-  - [ ] 11.1 Register Neovim user commands (`:TaskToggle`, `:TaskAddFeature`, etc.)
+  - [x] 11.1 Register Neovim user commands (`:TaskToggle`, `:TaskAddFeature`, etc.)
     - notes: one command per logical action; commands call into the appropriate module
   - [ ] 11.2 Define ph keys (placeholder keymap stubs)
   - [ ] 11.3 Define pc keys (plugin command keymaps)
