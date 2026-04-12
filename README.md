@@ -80,6 +80,34 @@ All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disa
 | `<leader>tP` | Prev complete |
 | `<leader>tS` | Sort document |
 
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `TaskToggleCheckbox` | Toggle task/subtask checkbox on the current line |
+| `TaskAddFeature` | Prompt for a name and insert a new feature at the cursor line |
+| `TaskAddTask` | Prompt for a name and insert a new task under the feature at the cursor |
+| `TaskAddSubtask` | Prompt for a name and insert a new subtask under the task at the cursor |
+| `TaskRemoveFeature` | Remove the feature under the cursor and all its tasks/subtasks |
+| `TaskRemoveTask` | Remove the task under the cursor and all its subtasks |
+| `TaskRemoveSubtask` | Remove the subtask under the cursor |
+| `TaskMoveFeatureUp` | Move the feature under the cursor up |
+| `TaskMoveFeatureDown` | Move the feature under the cursor down |
+| `TaskMoveTaskUp` | Move the task under the cursor up within its feature |
+| `TaskMoveTaskDown` | Move the task under the cursor down within its feature |
+| `TaskMoveSubtaskUp` | Move the subtask under the cursor up within its task |
+| `TaskMoveSubtaskDown` | Move the subtask under the cursor down within its task |
+| `TaskEjectFeature` | Eject the feature under the cursor (strip tokens, leaving plain text) |
+| `TaskEjectTask` | Eject the task under the cursor (strip tokens, leaving plain text) |
+| `TaskEjectSubtask` | Eject the subtask under the cursor (strip token, leaving plain text) |
+| `TaskGoto` | Go to a specific feature, task, or subtask by number (e.g., `3`, `3.2`, `3.2.1`) |
+| `TaskNextIncomplete` | Go to the next incomplete (unchecked) task or subtask |
+| `TaskPrevIncomplete` | Go to the previous incomplete (unchecked) task or subtask |
+| `TaskNextComplete` | Go to the next complete (checked) task or subtask |
+| `TaskPrevComplete` | Go to the previous complete (checked) task or subtask |
+| `TaskSort` | Sort the entire document by numbers |
+| `TaskShadowAttach` | Attach shadow virtual text (completion counts) to the current buffer |
+
 ## Lualine
 
 `require("task-manager.statusline").summary()` returns a formatted string like `󰄲 6/7` for the current buffer (empty string when no tasks exist).
