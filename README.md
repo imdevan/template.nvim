@@ -19,6 +19,10 @@ Requires [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) on your runtim
 
 ```bash
 nvim --headless -c "PlenaryBustedDirectory tests/ {minimal_init = 'tests/minimal_init.lua'}"
+
+# or 
+
+just test
 ```
 
 ### Configuration
@@ -34,6 +38,11 @@ nvim --headless -c "PlenaryBustedDirectory tests/ {minimal_init = 'tests/minimal
     },
     keymaps = {
       enabled = true,
+    },
+    spacing = {
+      after_feature = 0,
+      after_task    = 0,
+      after_subtask = 0,
     },
   },
 }
