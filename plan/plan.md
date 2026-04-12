@@ -229,10 +229,9 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 ## Feature 11: Commands & keymaps
   - [x] 11.1 Register Neovim user commands (`:TaskToggle`, `:TaskAddFeature`, etc.)
     - notes: one command per logical action; commands call into the appropriate module
-  - [ ] 11.2 Define ph keys (placeholder keymap stubs)
-  - [ ] 11.3 Define pc keys (plugin command keymaps)
-  - [ ] 11.4 Conditionally register keymaps based on config flags
-  - [ ] 11.5 Expose keymaps to which-key under `<leader>` group if which-key is available
+  - [ ] 11.2 Define pc keys (plugin command keymaps)
+  - [ ] 11.3 Conditionally register keymaps based on config flags
+  - [ ] 11.4 Expose keymaps to which-key under `<leader>` group if which-key is available
     - notes: use `pcall` to check for which-key; degrade gracefully if absent
 
 ## Feature 12: Shadow text (completion counts)
