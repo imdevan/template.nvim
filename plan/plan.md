@@ -237,8 +237,12 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - notes: use `pcall` to check for which-key; degrade gracefully if absent
 
 ## Feature 12: Shadow text (completion counts)
-  - [ ] 12.1 Display virtual text on each feature line showing `X/Y tasks complete`
+  - [x] 12.1 Display virtual text on each feature line showing `X/Y tasks complete`
     - notes: use `nvim_buf_set_extmark` with `virt_text`; update on every buffer change
+    - [x] 12.1.1 Create `shadow.lua` with `refresh(bufnr)` using `nvim_buf_set_extmark` eol virt_text
+    - [x] 12.1.2 Add `attach(bufnr)` to wire `TextChanged`/`TextChangedI` autocmds and call initial refresh
+    - [x] 12.1.3 Register `:TaskShadowAttach` command in `init.lua`
+    - [x] 12.1.4 Write tests for shadow virtual text counts
   - [ ] 12.2 Optional: expose completion summary in statusline via a public API function
 
 ## Feature 13: Testing infrastructure
