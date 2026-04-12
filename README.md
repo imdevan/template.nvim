@@ -44,6 +44,9 @@ just test
       after_task    = 0,
       after_subtask = 0,
     },
+    shadow = {
+      auto_attach = true,
+    },
   },
 }
 ```

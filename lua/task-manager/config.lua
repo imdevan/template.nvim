@@ -4,6 +4,7 @@ local M = {}
 ---@field tokens  TaskManagerTokens
 ---@field keymaps TaskManagerKeymaps
 ---@field spacing TaskManagerSpacing
+---@field shadow  TaskManagerShadow
 
 ---@class TaskManagerTokens
 ---@field feature string  template for feature header lines; use {feature} and {name}
@@ -18,6 +19,9 @@ local M = {}
 ---@field after_task    integer  blank lines inserted after a new task line
 ---@field after_subtask integer  blank lines inserted after a new subtask line
 
+---@class TaskManagerShadow
+---@field auto_attach boolean  attach shadow virtual text automatically on setup
+
 M.defaults = {
   tokens = {
     feature = "## Feature {feature}: {name}",
@@ -31,6 +35,9 @@ M.defaults = {
     after_feature = 0,
     after_task    = 0,
     after_subtask = 0,
+  },
+  shadow = {
+    auto_attach = true,
   },
 }
 

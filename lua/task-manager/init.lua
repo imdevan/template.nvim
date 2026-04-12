@@ -131,6 +131,15 @@ function M.setup(opts)
 			wk.add({ { "<leader>t", group = "task-manager" } })
 		end
 	end
+
+	if cfg.shadow.auto_attach then
+		vim.api.nvim_create_autocmd("BufEnter", {
+			pattern = "*.md",
+			callback = function(ev)
+				require("task-manager.shadow").attach(ev.buf)
+			end,
+		})
+	end
 end
 
 return M
