@@ -228,6 +228,34 @@ describe("sort", function()
 		}, result)
 	end)
 
+	it("preserves content after last feature", function()
+		local lines = {
+			"## Feature 2: Second",
+			"- [ ] 2.1 Task",
+			"",
+			"## Feature 1: First",
+			"- [ ] 1.1 Task",
+			"",
+			"## Appendix",
+			"Some trailing content.",
+		}
+		vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+
+		sort.sort_document(bufnr)
+
+		local result = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+		assert.are.same({
+			"## Feature 1: First",
+			"- [ ] 1.1 Task",
+			"",
+			"## Feature 2: Second",
+			"- [ ] 2.1 Task",
+			"",
+			"## Appendix",
+			"Some trailing content.",
+		}, result)
+	end)
+
 	it("preserves checkbox state during sort", function()
 		local lines = {
 			"## Feature 1: Test",

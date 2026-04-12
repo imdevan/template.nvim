@@ -292,6 +292,23 @@ function M.sort_document(bufnr)
 		end
 	end
 
+	-- Preserve content after last feature
+	if #features > 0 then
+		local last_feature_end = features[1].end_lnum
+		for _, feat in ipairs(features) do
+			if feat.end_lnum > last_feature_end then
+				last_feature_end = feat.end_lnum
+			end
+		end
+		local total = utils.line_count(bufnr)
+		if last_feature_end < total then
+			local postamble = vim.api.nvim_buf_get_lines(bufnr, last_feature_end, total, false)
+			for _, line in ipairs(postamble) do
+				table.insert(new_lines, line)
+			end
+		end
+	end
+
 	-- Replace entire buffer content
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, new_lines)
 
