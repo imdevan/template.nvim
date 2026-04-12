@@ -243,7 +243,9 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 12.1.2 Add `attach(bufnr)` to wire `TextChanged`/`TextChangedI` autocmds and call initial refresh
     - [x] 12.1.3 Register `:TaskShadowAttach` command in `init.lua`
     - [x] 12.1.4 Write tests for shadow virtual text counts
-  - [ ] 12.2 Optional: expose completion summary in statusline via a public API function
+  - [x] 12.2 Optional: expose completion summary in statusline via a public API function
+    - [x] 12.2.1 Create `statusline.lua` with `summary(bufnr?)` returning "Tasks: X/Y"
+    - [x] 12.2.2 Write tests for statusline summary
 
 ## Feature 13: Testing infrastructure
   - [x] 13.1 Choose and configure test runner
@@ -265,9 +267,5 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 13.4.2 Push-up decrements correct tokens
     - [x] 13.4.3 Full renumber pass resequences correctly
     - [x] 13.4.4 Non-fts lines preserved unchanged during full pass
-  - [ ] 13.5 Write integration tests for add/remove/move/eject (Features 5–8)
+  - [x] 13.5 Write integration tests for add/remove/move/eject (Features 5–8)
     - notes: each test sets up a buffer with known content, runs the operation, and asserts the resulting buffer state
-  - [ ] 13.6 Set up GitHub Actions CI
-    - notes: install stable Neovim, run `nvim --headless -c "PlenaryBustedDirectory tests/"`
-    - [ ] 13.6.1 Create `.github/workflows/ci.yml`
-    - [ ] 13.6.2 Run on push and pull_request to main
