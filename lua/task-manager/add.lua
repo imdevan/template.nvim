@@ -5,6 +5,15 @@ local renumber = require("task-manager.renumber")
 
 local M = {}
 
+---Insert `n` blank lines into `bufnr` immediately after `lnum` (1-indexed).
+---@param bufnr integer
+---@param lnum  integer
+---@param n     integer
+local function insert_blank_lines(bufnr, lnum, n)
+  if n <= 0 then return end
+  vim.api.nvim_buf_set_lines(bufnr, lnum, lnum, false, vim.fn["repeat"]({ "" }, n))
+end
+
 ---Insert a new feature header at `lnum` in `bufnr`, pushing features below down.
 ---The new feature number is derived from how many feature tokens already exist
 ---above `lnum`; features at or below `lnum` are incremented.
@@ -28,6 +37,7 @@ function M.add_feature(bufnr, lnum, name)
 
   -- Increment all feature/task/subtask tokens that were pushed down
   renumber.push_down(bufnr, lnum, "feature")
+  insert_blank_lines(bufnr, lnum, config.options.spacing.after_feature)
 end
 
 ---Prompt for a feature name then insert at the current cursor line.
@@ -79,6 +89,7 @@ function M.add_task(bufnr, lnum, name)
 
   -- Increment sibling tasks (and their subtasks) at or below the insertion line
   renumber.push_down(bufnr, lnum, "task", ref_fn)
+  insert_blank_lines(bufnr, lnum, config.options.spacing.after_task)
   return true
 end
 
@@ -140,6 +151,7 @@ function M.add_subtask(bufnr, lnum, name)
 
   -- Increment sibling subtasks at or below the insertion line
   renumber.push_down(bufnr, lnum, "subtask", ref_fn, ref_tn)
+  insert_blank_lines(bufnr, lnum, config.options.spacing.after_subtask)
   return true
 end
 

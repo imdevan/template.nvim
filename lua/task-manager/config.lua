@@ -1,8 +1,9 @@
 local M = {}
 
 ---@class TaskManagerConfig
----@field tokens TaskManagerTokens
+---@field tokens  TaskManagerTokens
 ---@field keymaps TaskManagerKeymaps
+---@field spacing TaskManagerSpacing
 
 ---@class TaskManagerTokens
 ---@field feature string  template for feature header lines; use {feature} and {name}
@@ -12,6 +13,11 @@ local M = {}
 ---@class TaskManagerKeymaps
 ---@field enabled boolean  master switch for all keymaps
 
+---@class TaskManagerSpacing
+---@field after_feature integer  blank lines inserted after a new feature header
+---@field after_task    integer  blank lines inserted after a new task line
+---@field after_subtask integer  blank lines inserted after a new subtask line
+
 M.defaults = {
   tokens = {
     feature = "## Feature {feature}: {name}",
@@ -20,6 +26,11 @@ M.defaults = {
   },
   keymaps = {
     enabled = true,
+  },
+  spacing = {
+    after_feature = 0,
+    after_task    = 0,
+    after_subtask = 0,
   },
 }
 
