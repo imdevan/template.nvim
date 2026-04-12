@@ -47,3 +47,32 @@ just test
   },
 }
 ```
+
+## Keymaps
+
+All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disable.
+
+| Key | Action |
+|-----|--------|
+| `<leader>tt` | Toggle checkbox |
+| `<leader>taf` | Add feature |
+| `<leader>tat` | Add task |
+| `<leader>tas` | Add subtask |
+| `<leader>trf` | Remove feature |
+| `<leader>trt` | Remove task |
+| `<leader>trs` | Remove subtask |
+| `<leader>tmK` | Move feature up |
+| `<leader>tmJ` | Move feature down |
+| `<leader>tmk` | Move task up |
+| `<leader>tmj` | Move task down |
+| `<leader>t[` | Move subtask up |
+| `<leader>t]` | Move subtask down |
+| `<leader>tef` | Eject feature |
+| `<leader>tet` | Eject task |
+| `<leader>tes` | Eject subtask |
+| `<leader>tg` | Go to target (e.g. `3`, `3.2`, `3.2.1`) |
+| `<leader>tn` | Next incomplete |
+| `<leader>tp` | Prev incomplete |
+| `<leader>tN` | Next complete |
+| `<leader>tP` | Prev complete |
+| `<leader>tS` | Sort document |

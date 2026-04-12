@@ -96,6 +96,41 @@ function M.setup(opts)
 	vim.api.nvim_create_user_command("TaskShadowAttach", function()
 		require("task-manager.shadow").attach(vim.api.nvim_get_current_buf())
 	end, { desc = "Attach shadow virtual text (completion counts) to the current buffer" })
+
+	local cfg = require("task-manager.config").options
+	if cfg.keymaps.enabled then
+		local map = function(lhs, cmd, desc)
+			vim.keymap.set("n", lhs, "<cmd>" .. cmd .. "<cr>", { desc = desc })
+		end
+
+		map("<leader>tt", "TaskToggleCheckbox",   "Toggle checkbox")
+		map("<leader>taf", "TaskAddFeature",       "Add feature")
+		map("<leader>tat", "TaskAddTask",          "Add task")
+		map("<leader>tas", "TaskAddSubtask",       "Add subtask")
+		map("<leader>trf", "TaskRemoveFeature",    "Remove feature")
+		map("<leader>trt", "TaskRemoveTask",       "Remove task")
+		map("<leader>trs", "TaskRemoveSubtask",    "Remove subtask")
+		map("<leader>tmK", "TaskMoveFeatureUp",    "Move feature up")
+		map("<leader>tmJ", "TaskMoveFeatureDown",  "Move feature down")
+		map("<leader>tmk", "TaskMoveTaskUp",       "Move task up")
+		map("<leader>tmj", "TaskMoveTaskDown",     "Move task down")
+		map("<leader>t[",  "TaskMoveSubtaskUp",    "Move subtask up")
+		map("<leader>t]",  "TaskMoveSubtaskDown",  "Move subtask down")
+		map("<leader>tef", "TaskEjectFeature",     "Eject feature")
+		map("<leader>tet", "TaskEjectTask",        "Eject task")
+		map("<leader>tes", "TaskEjectSubtask",     "Eject subtask")
+		map("<leader>tg",  "TaskGoto",             "Go to fts target")
+		map("<leader>tn",  "TaskNextIncomplete",   "Next incomplete")
+		map("<leader>tp",  "TaskPrevIncomplete",   "Prev incomplete")
+		map("<leader>tN",  "TaskNextComplete",     "Next complete")
+		map("<leader>tP",  "TaskPrevComplete",     "Prev complete")
+		map("<leader>tS",  "TaskSort",             "Sort document")
+
+		local ok, wk = pcall(require, "which-key")
+		if ok then
+			wk.add({ { "<leader>t", group = "task-manager" } })
+		end
+	end
 end
 
 return M
