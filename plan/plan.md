@@ -245,26 +245,42 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
   - [x] 12.2 Optional: expose completion summary in statusline via a public API function
     - [x] 12.2.1 Create `statusline.lua` with `summary(bufnr?)` returning "Tasks: X/Y"
     - [x] 12.2.2 Write tests for statusline summary
+  - [x] 12.3 add config option to attach on init
+    - [x] 12.3.1 Add `shadow.auto_attach` (boolean, default `false`) to `config.lua`
+    - [x] 12.3.2 In `setup()`, register a `BufEnter *.md` autocmd that calls `shadow.attach` when `auto_attach` is true
+    - default to enabled / true
 
-## Feature 13: Testing infrastructure
-  - [x] 13.1 Choose and configure test runner
+## Feature 13: version
+
+- [ ] 13.1 add version token
+
+```
+# {semver}
+```
+
+- [ ] 13.2 version shadow text shows tasks current and total 
+- [ ] 13.3 add/remove/move/eject version
+
+
+## Feature 14: Testing infrastructure
+  - [x] 14.1 Choose and configure test runner
     - notes: use plenary.nvim busted wrapper; tests run in headless Neovim
-    - [x] 13.1.1 Create `tests/minimal_init.lua` to bootstrap plenary and the plugin
+    - [x] 14.1.1 Create `tests/minimal_init.lua` to bootstrap plenary and the plugin
       - note: butt
-    - [x] 13.1.2 Document local run command in README
-  - [x] 13.2 Write unit tests for config module
-    - [x] 13.2.1 Default values are set correctly
-    - [x] 13.2.2 User opts are deep-merged over defaults
-  - [x] 13.3 Write unit tests for parsing (Feature 2)
-    - [x] 13.3.1 Feature line detection
-    - [x] 13.3.2 Task line detection
-    - [x] 13.3.3 Subtask line detection
-    - [x] 13.3.4 Upward scan resolves correct fts context
-    - [x] 13.3.5 build_index returns ordered token list with correct lnum
-  - [x] 13.4 Write unit tests for renumbering engine (Feature 3)
-    - [x] 13.4.1 Push-down increments correct tokens
-    - [x] 13.4.2 Push-up decrements correct tokens
-    - [x] 13.4.3 Full renumber pass resequences correctly
-    - [x] 13.4.4 Non-fts lines preserved unchanged during full pass
-  - [x] 13.5 Write integration tests for add/remove/move/eject (Features 5–8)
+    - [x] 14.1.2 Document local run command in README
+  - [x] 14.2 Write unit tests for config module
+    - [x] 14.2.1 Default values are set correctly
+    - [x] 14.2.2 User opts are deep-merged over defaults
+  - [x] 14.3 Write unit tests for parsing (Feature 2)
+    - [x] 14.3.1 Feature line detection
+    - [x] 14.3.2 Task line detection
+    - [x] 14.3.3 Subtask line detection
+    - [x] 14.3.4 Upward scan resolves correct fts context
+    - [x] 14.3.5 build_index returns ordered token list with correct lnum
+  - [x] 14.4 Write unit tests for renumbering engine (Feature 3)
+    - [x] 14.4.1 Push-down increments correct tokens
+    - [x] 14.4.2 Push-up decrements correct tokens
+    - [x] 14.4.3 Full renumber pass resequences correctly
+    - [x] 14.4.4 Non-fts lines preserved unchanged during full pass
+  - [x] 14.5 Write integration tests for add/remove/move/eject (Features 5–8)
     - notes: each test sets up a buffer with known content, runs the operation, and asserts the resulting buffer state
