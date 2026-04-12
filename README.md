@@ -8,7 +8,7 @@ A Neovim plugin for managing structured plan/task markdown files.
 
 ```lua
 {
-  "your-username/task-manager.nvim",
+  "imdevan/task-manager.nvim",
   opts = {},
 }
 ```
@@ -29,7 +29,7 @@ just test
 
 ```lua
 {
-  "your-username/task-manager.nvim",
+  "imdevan/task-manager.nvim",
   opts = {
     tokens = {
       feature = "## Feature",
@@ -114,7 +114,7 @@ Set `keymaps.enabled = false` and define your own mappings using the commands di
 
 ```lua
 {
-  "your-username/task-manager.nvim",
+  "imdevan/task-manager.nvim",
   opts = { keymaps = { enabled = false } },
   config = function(_, opts)
     require("task-manager").setup(opts)
