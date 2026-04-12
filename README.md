@@ -108,6 +108,23 @@ All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disa
 | `TaskSort` | Sort the entire document by numbers |
 | `TaskShadowAttach` | Attach shadow virtual text (completion counts) to the current buffer |
 
+## Custom Keymaps
+
+Set `keymaps.enabled = false` and define your own mappings using the commands directly:
+
+```lua
+{
+  "your-username/task-manager.nvim",
+  opts = { keymaps = { enabled = false } },
+  config = function(_, opts)
+    require("task-manager").setup(opts)
+    vim.keymap.set("n", "<leader>tt", "<cmd>TaskToggleCheckbox<cr>")
+    vim.keymap.set("n", "<leader>taf", "<cmd>TaskAddFeature<cr>")
+    -- etc.
+  end,
+}
+```
+
 ## Lualine
 
 `require("task-manager.statusline").summary()` returns a formatted string like `󰄲 6/7` for the current buffer (empty string when no tasks exist).
