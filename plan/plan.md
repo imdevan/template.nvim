@@ -1,6 +1,6 @@
 # Context
 
-A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. The plugin operates on markdown files using a defined fts (feature/task/subtask) token format, providing commands and keymaps to add, remove, move, toggle, and navigate fts entries while keeping all numbering consistent.
+A Nvim plugin (lazy.nvim compatible) for managing structured plan/task files. The plugin operates on markdown files using a defined fts (feature/task/subtask) token format, providing commands and keymaps to add, remove, move, toggle, and navigate fts entries while keeping all numbering consistent.
 
 # Definitions
 
@@ -39,7 +39,7 @@ A Neovim plugin (lazy.nvim compatible) for managing structured plan/task files. 
     - [x] 1.1.1 Create directory layout (`lua/task-manager/`, `plugin/`, etc.)
     - [x] 1.1.2 Write `plugin/task-manager.lua` that calls setup on load
   - [x] 1.2 Define default config table
-    - notes: fts tokens and keymaps should be overridable via `setup(opts)`
+    - notes: fts tokens and keymaps should be over-ridable via `setup(opts)`
     - [x] 1.2.1 Default feature/task/subtask token patterns
     - [x] 1.2.2 Default keymap toggle flags (enabled/disabled)
   - [x] 1.3 Set up utils module
