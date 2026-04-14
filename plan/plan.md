@@ -96,7 +96,7 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
       - notes: butts
     - [x] 5.1.4 Write unit tests (`tests/add_spec.lua`) covering empty buffer, insert at start/middle/end, and task renumbering
     - [x] 5.1.5 feature should always be added one space after the last task/sub-task of the parent / current feature. and after any non-task notes / items
-    - [ ] 5.1.6 move the cursor to 2 lines after the inserted feature
+    - [x] 5.1.6 insert blank line after feature and move cursor to it
       - do not insert and "hijack remaining tasks/subtasks"
   - [ ] 5.2 config option for feature line
   - [x] 5.3 Add task
@@ -115,7 +115,6 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.4.1 Resolve parent task from cursor context
     - [x] 5.4.2 Insert subtask line and trigger push-down
     - [ ] 5.4.3 insert after any non-task notes / items
-
 
 ## Feature 6: Remove fts
   - [x] 6.1 Remove feature
