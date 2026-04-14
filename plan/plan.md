@@ -107,7 +107,8 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.2.2 Use feature_line in add_feature to control blank separator before new feature
     - [x] 5.2.3 Use feature_line in sort_document to control blank separator between features
     - [x] 5.2.4 Update add_spec and sort_spec tests to reflect feature_line=false default
-    - [ ] 5.2.5 feature_line should be added if addfeature is called from within an empty feature
+    - [x] 5.2.5 feature_line should be added if addfeature is called from within an empty feature
+      - verified already works; added tests for feature_line=true with empty and non-empty features
       - currently calling taf on empty feature does not insert the line between the current and new one
   - [x] 5.3 Add task
     - notes: inserts task under the feature containing the cursor; pushes sibling tasks down
