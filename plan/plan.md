@@ -95,11 +95,17 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.1.3 Register `:TaskAddFeature` command in `init.lua`
       - notes: butts
     - [x] 5.1.4 Write unit tests (`tests/add_spec.lua`) covering empty buffer, insert at start/middle/end, and task renumbering
+    - [ ] 5.1.5 feature should always be added one space after the last task/sub-task of the parent feature. and after any non-task notes / items
+      - do not insert and "hijack remaining tasks/subtasks"
+    
   - [x] 5.2 Add task
     - notes: inserts task under the feature containing the cursor; pushes sibling tasks down
     - [x] 5.2.1 Resolve parent feature from cursor context
     - [x] 5.2.2 Insert task line and trigger push-down
     - [x] 5.2.3 Task should be added at line below current; and use the same indention as the previous  task (or feature if feature is the next fts above the added task)
+    - [ ] 5.2.4 task should always be added after the last sub task of the current or last task; and after any non-task notes / items
+    - [ ] 5.2.5 task should be added after any notes or non fts items before the next fts
+      - do not insert and "hijack remaining subtasks"
   - [x] 5.3 Add subtask
     - notes: inserts subtask under the task containing the cursor; pushes sibling subtasks down
     - when adding sub task: 
@@ -107,6 +113,8 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
       - when added after another subtask maintain indent of previous sub task
     - [x] 5.3.1 Resolve parent task from cursor context
     - [x] 5.3.2 Insert subtask line and trigger push-down
+    - [ ] 5.3.3 insert after any non-task notes / items
+
 
 ## Feature 6: Remove fts
   - [x] 6.1 Remove feature
