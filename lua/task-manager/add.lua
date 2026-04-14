@@ -57,9 +57,9 @@ function M.add_feature(bufnr, lnum, name)
   end
 
   local feat_line = utils.format_fts(config.options.tokens.feature, new_fn, nil, nil, name)
+  local sep_lines = config.options.feature_line and { "", "---" } or { "" }
 
-  -- Ensure exactly one blank line between the previous content and the new feature.
-  -- Check if the line immediately after last_content is already blank.
+  -- Place the new feature after the last content line, always with a separator.
   local next_line = utils.get_line(bufnr, insert_after + 1)
   local prev      = utils.get_line(bufnr, insert_after)
   if not prev:match("%S") and insert_after == 1 then
@@ -67,17 +67,24 @@ function M.add_feature(bufnr, lnum, name)
     vim.api.nvim_buf_set_lines(bufnr, 0, 0, false, { feat_line })
     insert_at = 1
   elseif prev:match("%S") and not next_line:match("%S") then
-    -- content line followed by a blank → insert feature after the blank
-    vim.api.nvim_buf_set_lines(bufnr, insert_after + 1, insert_after + 1, false, { feat_line })
-    insert_at = insert_after + 2
+    -- content line followed by a blank: replace blank with separator(s) + feature
+    local replacement = vim.list_extend(vim.deepcopy(sep_lines), { feat_line })
+    vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after + 1, false, replacement)
+    insert_at = insert_after + #replacement
   elseif prev:match("%S") then
-    -- content line with no blank after → insert blank + feature
-    vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, { "", feat_line })
-    insert_at = insert_after + 2
+    -- content line with no blank: insert separator(s) + feature
+    local replacement = vim.list_extend(vim.deepcopy(sep_lines), { feat_line })
+    vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, replacement)
+    insert_at = insert_after + #replacement
   else
-    -- blank line → insert feature right after it
-    vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, { feat_line })
-    insert_at = insert_after + 1
+    -- already a blank line: insert feature (and --- if feature_line) right after it
+    if config.options.feature_line then
+      vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, { "---", feat_line })
+      insert_at = insert_after + 2
+    else
+      vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, { feat_line })
+      insert_at = insert_after + 1
+    end
   end
 
   -- Increment all feature/task/subtask tokens that were pushed down

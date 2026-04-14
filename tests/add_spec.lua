@@ -1,4 +1,5 @@
-local add = require("task-manager.add")
+local add    = require("task-manager.add")
+local config = require("task-manager.config")
 
 local function make_buf(lines)
   local bufnr = vim.api.nvim_create_buf(false, true)
@@ -66,7 +67,8 @@ describe("add", function()
       local lines = get_lines(buf)
       assert.equals("## Feature 1: Alpha", lines[1])
       assert.equals("## Feature 2: Beta",  lines[2])
-      assert.equals("## Feature 3: Last",  lines[3])
+      assert.equals("",                     lines[3])
+      assert.equals("## Feature 3: Last",  lines[4])
     end)
 
     it("does not hijack tasks belonging to the next feature", function()
@@ -85,7 +87,7 @@ describe("add", function()
       assert.equals("- [ ] 3.1 Task two",   lines[5])
     end)
 
-    it("inserts one blank line separator when previous content line is non-blank", function()
+    it("always inserts a blank line separator before the new feature (feature_line=false)", function()
       local buf = make_buf({
         "## Feature 1: Alpha",
         "- [ ] 1.1 Task one",
@@ -120,6 +122,57 @@ describe("add", function()
       assert.equals("  - [ ] 2.1 Task two",   lines[5])
       assert.equals("",                        lines[6])
       assert.equals("## Feature 3: New",      lines[7])
+    end)
+
+    describe("feature_line=true", function()
+      before_each(function() config.setup({ feature_line = true }) end)
+      after_each(function()  config.setup({}) end)
+
+      it("inserts blank + --- separator after tasks when feature_line=true", function()
+        local buf = make_buf({
+          "## Feature 1: Alpha",
+          "- [ ] 1.1 Task one",
+          "## Feature 2: Beta",
+        })
+        add.add_feature(buf, 1, "New")
+        local lines = get_lines(buf)
+        assert.equals("## Feature 1: Alpha", lines[1])
+        assert.equals("- [ ] 1.1 Task one",  lines[2])
+        assert.equals("",                     lines[3])
+        assert.equals("---",                  lines[4])
+        assert.equals("## Feature 2: New",   lines[5])
+        assert.equals("## Feature 3: Beta",  lines[6])
+      end)
+
+      it("inserts blank + --- separator when called from within an empty feature", function()
+        local buf = make_buf({
+          "## Feature 1: Alpha",
+          "## Feature 2: Beta",
+          "- [ ] 2.1 Task two",
+        })
+        add.add_feature(buf, 1, "New")
+        local lines = get_lines(buf)
+        assert.equals("## Feature 1: Alpha", lines[1])
+        assert.equals("",                     lines[2])
+        assert.equals("---",                  lines[3])
+        assert.equals("## Feature 2: New",   lines[4])
+        assert.equals("## Feature 3: Beta",  lines[5])
+        assert.equals("- [ ] 3.1 Task two",  lines[6])
+      end)
+
+      it("inserts --- when cursor is on blank line after a feature (second taf call)", function()
+        -- simulates: taf inserts Feature 1, cursor lands on blank below it, taf again
+        local buf = make_buf({
+          "## Feature 1: Alpha",
+          "",
+        })
+        add.add_feature(buf, 2, "Beta")
+        local lines = get_lines(buf)
+        assert.equals("## Feature 1: Alpha", lines[1])
+        assert.equals("",                     lines[2])
+        assert.equals("---",                  lines[3])
+        assert.equals("## Feature 2: Beta",  lines[4])
+      end)
     end)
 
   end)

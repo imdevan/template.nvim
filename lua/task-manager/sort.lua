@@ -1,6 +1,7 @@
 local utils = require("task-manager.utils")
 local parser = require("task-manager.parser")
 local renumber = require("task-manager.renumber")
+local config = require("task-manager.config")
 
 local M = {}
 
@@ -286,9 +287,12 @@ function M.sort_document(bufnr)
 			end
 		end
 
-		-- Add blank line separator between features (except after last)
+		-- Add separator between features (except after last)
 		if feat_idx < #features then
-			table.insert(new_lines, "")
+			if config.options.feature_line then
+				table.insert(new_lines, "")
+				table.insert(new_lines, "---")
+			end
 		end
 	end
 

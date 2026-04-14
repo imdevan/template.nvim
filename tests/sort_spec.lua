@@ -34,10 +34,8 @@ describe("sort", function()
 		assert.are.same({
 			"## Feature 1: First",
 			"- [ ] 1.1 Task",
-			"",
 			"## Feature 2: Second",
 			"- [ ] 2.1 Task",
-			"",
 			"## Feature 3: Third",
 			"- [ ] 3.1 Task",
 		}, result)
@@ -104,7 +102,6 @@ describe("sort", function()
 			"## Feature 1: First",
 			"  notes: feature 1 notes",
 			"- [ ] 1.1 Task",
-			"",
 			"## Feature 2: Second",
 			"  notes: feature 2 notes",
 			"- [ ] 2.1 Task",
@@ -180,7 +177,6 @@ describe("sort", function()
 			"## Feature 1: First",
 			"- [ ] 1.1 Task A",
 			"- [ ] 1.2 Task B",
-			"",
 			"## Feature 2: Second",
 			"- [ ] 2.1 Task A",
 			"  - [ ] 2.1.1 Subtask A1",
@@ -222,7 +218,6 @@ describe("sort", function()
 			"",
 			"## Feature 1: First",
 			"- [ ] 1.1 Task",
-			"",
 			"## Feature 2: Second",
 			"- [ ] 2.1 Task",
 		}, result)
@@ -247,7 +242,6 @@ describe("sort", function()
 		assert.are.same({
 			"## Feature 1: First",
 			"- [ ] 1.1 Task",
-			"",
 			"## Feature 2: Second",
 			"- [ ] 2.1 Task",
 			"",
