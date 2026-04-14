@@ -21,30 +21,38 @@ describe("add", function()
       assert.equals("## Feature 1: First", lines[1])
     end)
 
-    it("inserts at line 1 and pushes existing features down", function()
+    it("inserts after the end of the current feature block, not at cursor", function()
+      -- cursor is on Feature 1 header; Feature 2 should appear after Feature 1's tasks
       local buf = make_buf({
         "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
         "## Feature 2: Beta",
       })
       add.add_feature(buf, 1, "New")
       local lines = get_lines(buf)
-      assert.equals("## Feature 1: New",   lines[1])
-      assert.equals("## Feature 2: Alpha", lines[2])
-      assert.equals("## Feature 3: Beta",  lines[3])
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task one",   lines[2])
+      assert.equals("",                      lines[3])
+      assert.equals("## Feature 2: New",    lines[4])
+      assert.equals("## Feature 3: Beta",   lines[5])
     end)
 
     it("inserts in the middle with correct numbering", function()
       local buf = make_buf({
         "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
         "## Feature 2: Beta",
         "## Feature 3: Gamma",
       })
-      add.add_feature(buf, 2, "Middle")
+      -- cursor on Feature 1; new feature goes after Feature 1's last task
+      add.add_feature(buf, 1, "Middle")
       local lines = get_lines(buf)
       assert.equals("## Feature 1: Alpha",  lines[1])
-      assert.equals("## Feature 2: Middle", lines[2])
-      assert.equals("## Feature 3: Beta",   lines[3])
-      assert.equals("## Feature 4: Gamma",  lines[4])
+      assert.equals("- [ ] 1.1 Task one",   lines[2])
+      assert.equals("",                      lines[3])
+      assert.equals("## Feature 2: Middle", lines[4])
+      assert.equals("## Feature 3: Beta",   lines[5])
+      assert.equals("## Feature 4: Gamma",  lines[6])
     end)
 
     it("appends after the last feature without affecting existing numbers", function()
@@ -53,11 +61,45 @@ describe("add", function()
         "## Feature 2: Beta",
         "",
       })
-      add.add_feature(buf, 3, "Last")
+      -- cursor on Feature 2; no tasks below it, blank line already present
+      add.add_feature(buf, 2, "Last")
       local lines = get_lines(buf)
       assert.equals("## Feature 1: Alpha", lines[1])
       assert.equals("## Feature 2: Beta",  lines[2])
       assert.equals("## Feature 3: Last",  lines[3])
+    end)
+
+    it("does not hijack tasks belonging to the next feature", function()
+      -- cursor on Feature 1 which has no tasks; Feature 2 tasks must stay with Feature 2
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "## Feature 2: Beta",
+        "- [ ] 2.1 Task two",
+      })
+      add.add_feature(buf, 1, "New")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("",                      lines[2])
+      assert.equals("## Feature 2: New",    lines[3])
+      assert.equals("## Feature 3: Beta",   lines[4])
+      assert.equals("- [ ] 3.1 Task two",   lines[5])
+    end)
+
+    it("inserts one blank line separator when previous content line is non-blank", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "## Feature 2: Beta",
+      })
+      add.add_feature(buf, 1, "New")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",    lines[1])
+      assert.equals("- [ ] 1.1 Task one",     lines[2])
+      assert.equals("  - [ ] 1.1.1 Sub one",  lines[3])
+      assert.equals("",                        lines[4])
+      assert.equals("## Feature 2: New",      lines[5])
+      assert.equals("## Feature 3: Beta",     lines[6])
     end)
 
     it("also renumbers tasks and subtasks belonging to pushed-down features", function()
@@ -68,14 +110,16 @@ describe("add", function()
         "## Feature 2: Beta",
         "  - [ ] 2.1 Task two",
       })
-      add.add_feature(buf, 1, "New")
+      -- cursor on Feature 2; new feature goes after Feature 2's last task
+      add.add_feature(buf, 4, "New")
       local lines = get_lines(buf)
-      assert.equals("## Feature 1: New",     lines[1])
-      assert.equals("## Feature 2: Alpha",   lines[2])
-      assert.equals("  - [ ] 2.1 Task one",  lines[3])
-      assert.equals("  - [ ] 2.1.1 Sub one", lines[4])
-      assert.equals("## Feature 3: Beta",    lines[5])
-      assert.equals("  - [ ] 3.1 Task two",  lines[6])
+      assert.equals("## Feature 1: Alpha",    lines[1])
+      assert.equals("  - [ ] 1.1 Task one",   lines[2])
+      assert.equals("  - [ ] 1.1.1 Sub one",  lines[3])
+      assert.equals("## Feature 2: Beta",     lines[4])
+      assert.equals("  - [ ] 2.1 Task two",   lines[5])
+      assert.equals("",                        lines[6])
+      assert.equals("## Feature 3: New",      lines[7])
     end)
 
   end)
