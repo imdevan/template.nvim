@@ -98,6 +98,9 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.1.5 feature should always be added one space after the last task/sub-task of the parent / current feature. and after any non-task notes / items
     - [x] 5.1.6 insert blank line after feature and move cursor to it
       - do not insert and "hijack remaining tasks/subtasks"
+    - [x] 5.1.7 there should always between the last task /sub task and the next feature (or blank lines or feature line)
+      - [x] 5.1.7.1 add_feature always inserts a blank line (or --- if feature_line=true) before the new feature header
+      - [x] 5.1.7.2 updated add_spec tests to reflect always-separator behaviour
   - [x] 5.2 config option for feature line
     - if true line is inserted between features on add and sort
     - [x] 5.2.1 Add feature_line boolean to TaskManagerSpacing type and defaults (false)
