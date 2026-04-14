@@ -95,7 +95,7 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.1.3 Register `:TaskAddFeature` command in `init.lua`
       - notes: butts
     - [x] 5.1.4 Write unit tests (`tests/add_spec.lua`) covering empty buffer, insert at start/middle/end, and task renumbering
-    - [ ] 5.1.5 feature should always be added one space after the last task/sub-task of the parent feature. and after any non-task notes / items
+    - [ ] 5.1.5 feature should always be added one space after the last task/sub-task of the parent / current feature. and after any non-task notes / items
       - do not insert and "hijack remaining tasks/subtasks"
     
   - [x] 5.2 Add task
