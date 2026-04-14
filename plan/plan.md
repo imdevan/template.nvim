@@ -116,7 +116,6 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.3.2 Insert task line and trigger push-down
     - [x] 5.3.3 Task should be added at line below current; and use the same indention as the previous  task (or feature if feature is the next fts above the added task)
     - [ ] 5.3.4 task should always be added after the last sub task of the current or last task; and after any non-task notes / items
-    - [ ] 5.3.5 task should be added after any notes or non fts items before the next fts
       - do not insert and "hijack remaining subtasks"
   - [x] 5.4 Add subtask
     - notes: inserts subtask under the task containing the cursor; pushes sibling subtasks down
