@@ -95,25 +95,26 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.1.3 Register `:TaskAddFeature` command in `init.lua`
       - notes: butts
     - [x] 5.1.4 Write unit tests (`tests/add_spec.lua`) covering empty buffer, insert at start/middle/end, and task renumbering
-    - [ ] 5.1.5 feature should always be added one space after the last task/sub-task of the parent / current feature. and after any non-task notes / items
+    - [x] 5.1.5 feature should always be added one space after the last task/sub-task of the parent / current feature. and after any non-task notes / items
+    - [ ] 5.1.6 move the cursor to 2 lines after the inserted feature
       - do not insert and "hijack remaining tasks/subtasks"
-    
-  - [x] 5.2 Add task
+  - [ ] 5.2 config option for feature line
+  - [x] 5.3 Add task
     - notes: inserts task under the feature containing the cursor; pushes sibling tasks down
-    - [x] 5.2.1 Resolve parent feature from cursor context
-    - [x] 5.2.2 Insert task line and trigger push-down
-    - [x] 5.2.3 Task should be added at line below current; and use the same indention as the previous  task (or feature if feature is the next fts above the added task)
-    - [ ] 5.2.4 task should always be added after the last sub task of the current or last task; and after any non-task notes / items
-    - [ ] 5.2.5 task should be added after any notes or non fts items before the next fts
+    - [x] 5.3.1 Resolve parent feature from cursor context
+    - [x] 5.3.2 Insert task line and trigger push-down
+    - [x] 5.3.3 Task should be added at line below current; and use the same indention as the previous  task (or feature if feature is the next fts above the added task)
+    - [ ] 5.3.4 task should always be added after the last sub task of the current or last task; and after any non-task notes / items
+    - [ ] 5.3.5 task should be added after any notes or non fts items before the next fts
       - do not insert and "hijack remaining subtasks"
-  - [x] 5.3 Add subtask
+  - [x] 5.4 Add subtask
     - notes: inserts subtask under the task containing the cursor; pushes sibling subtasks down
     - when adding sub task: 
       - if added after a task; indent + 1
       - when added after another subtask maintain indent of previous sub task
-    - [x] 5.3.1 Resolve parent task from cursor context
-    - [x] 5.3.2 Insert subtask line and trigger push-down
-    - [ ] 5.3.3 insert after any non-task notes / items
+    - [x] 5.4.1 Resolve parent task from cursor context
+    - [x] 5.4.2 Insert subtask line and trigger push-down
+    - [ ] 5.4.3 insert after any non-task notes / items
 
 
 ## Feature 6: Remove fts
@@ -258,37 +259,52 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 12.3.2 In `setup()`, register a `BufEnter *.md` autocmd that calls `shadow.attach` when `auto_attach` is true
     - default to enabled / true
 
-## Feature 13: version
+## Feature 13: fixes
 
-- [ ] 13.1 add version token
+- [ ] 13.1 allow for 0 based index / numbers
+- e.g. 
+
+```
+## Feature 0: config
+0.1 task 0.1
+```
+- [ ] 13.1 ignore text in code blocks
+  - do not consider in fts lookups / lookbacks
+  - do not show shadow text
+  - do not consider in buffer/summary total
+
+
+## Feature 14: version
+
+- [ ] 14.1 add version token
 
 ```
 # {semver}
 ```
 
-- [ ] 13.2 version shadow text shows tasks current and total 
-- [ ] 13.3 add/remove/move/eject version
+- [ ] 14.2 version shadow text shows tasks current and total 
+- [ ] 14.3 add/remove/move/eject version
 
 
-## Feature 14: Testing infrastructure
-  - [x] 14.1 Choose and configure test runner
+## Feature 15: Testing infrastructure
+  - [x] 15.1 Choose and configure test runner
     - notes: use plenary.nvim busted wrapper; tests run in headless Neovim
-    - [x] 14.1.1 Create `tests/minimal_init.lua` to bootstrap plenary and the plugin
+    - [x] 15.1.1 Create `tests/minimal_init.lua` to bootstrap plenary and the plugin
       - note: butt
-    - [x] 14.1.2 Document local run command in README
-  - [x] 14.2 Write unit tests for config module
-    - [x] 14.2.1 Default values are set correctly
-    - [x] 14.2.2 User opts are deep-merged over defaults
-  - [x] 14.3 Write unit tests for parsing (Feature 2)
-    - [x] 14.3.1 Feature line detection
-    - [x] 14.3.2 Task line detection
-    - [x] 14.3.3 Subtask line detection
-    - [x] 14.3.4 Upward scan resolves correct fts context
-    - [x] 14.3.5 build_index returns ordered token list with correct lnum
-  - [x] 14.4 Write unit tests for renumbering engine (Feature 3)
-    - [x] 14.4.1 Push-down increments correct tokens
-    - [x] 14.4.2 Push-up decrements correct tokens
-    - [x] 14.4.3 Full renumber pass resequences correctly
-    - [x] 14.4.4 Non-fts lines preserved unchanged during full pass
-  - [x] 14.5 Write integration tests for add/remove/move/eject (Features 5–8)
+    - [x] 15.1.2 Document local run command in README
+  - [x] 15.2 Write unit tests for config module
+    - [x] 15.2.1 Default values are set correctly
+    - [x] 15.2.2 User opts are deep-merged over defaults
+  - [x] 15.3 Write unit tests for parsing (Feature 2)
+    - [x] 15.3.1 Feature line detection
+    - [x] 15.3.2 Task line detection
+    - [x] 15.3.3 Subtask line detection
+    - [x] 15.3.4 Upward scan resolves correct fts context
+    - [x] 15.3.5 build_index returns ordered token list with correct lnum
+  - [x] 15.4 Write unit tests for renumbering engine (Feature 3)
+    - [x] 15.4.1 Push-down increments correct tokens
+    - [x] 15.4.2 Push-up decrements correct tokens
+    - [x] 15.4.3 Full renumber pass resequences correctly
+    - [x] 15.4.4 Non-fts lines preserved unchanged during full pass
+  - [x] 15.5 Write integration tests for add/remove/move/eject (Features 5–8)
     - notes: each test sets up a buffer with known content, runs the operation, and asserts the resulting buffer state
