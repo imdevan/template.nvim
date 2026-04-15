@@ -23,17 +23,23 @@ end
 local function find_feature_end(bufnr, lnum)
   local total = utils.line_count(bufnr)
   local last_content = lnum
+  local found_sep = nil  -- line number of a trailing --- separator, if any
   for i = lnum + 1, total do
     local t = parser.parse_line(utils.get_line(bufnr, i))
     if t and t.type == "feature" then
       break
     end
     local text = utils.get_line(bufnr, i)
-    if text:match("%S") then
+    if text:match("^%s*---%s*$") then
+      found_sep = i  -- remember the --- but keep scanning
+    elseif text:match("%S") then
       last_content = i
+      found_sep = nil  -- content after --- resets it
     end
   end
-  return last_content
+  -- If a trailing --- was found (with only blanks between it and the next feature),
+  -- return it so the new feature is inserted right after it (reusing the separator).
+  return found_sep or last_content
 end
 
 ---Insert a new feature header after the end of the current feature block,
@@ -57,34 +63,28 @@ function M.add_feature(bufnr, lnum, name)
   end
 
   local feat_line = utils.format_fts(config.options.tokens.feature, new_fn, nil, nil, name)
-  local sep_lines = config.options.feature_line and { "", "---" } or { "" }
 
-  -- Place the new feature after the last content line, always with a separator.
-  local next_line = utils.get_line(bufnr, insert_after + 1)
-  local prev      = utils.get_line(bufnr, insert_after)
+  local prev = utils.get_line(bufnr, insert_after)
+  local prev_is_sep = prev:match("^%s*---%s*$")
+
   if not prev:match("%S") and insert_after == 1 then
-    -- buffer is effectively empty (starts with blank) → insert at top
+    -- buffer is effectively empty → insert at top
     vim.api.nvim_buf_set_lines(bufnr, 0, 0, false, { feat_line })
     insert_at = 1
-  elseif prev:match("%S") and not next_line:match("%S") then
-    -- content line followed by a blank: replace blank with separator(s) + feature
-    local replacement = vim.list_extend(vim.deepcopy(sep_lines), { feat_line })
-    vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after + 1, false, replacement)
-    insert_at = insert_after + #replacement
-  elseif prev:match("%S") then
-    -- content line with no blank: insert separator(s) + feature
-    local replacement = vim.list_extend(vim.deepcopy(sep_lines), { feat_line })
-    vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, replacement)
-    insert_at = insert_after + #replacement
+  elseif prev_is_sep then
+    -- insert_after landed on an existing --- : just insert the feature after it
+    vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, { feat_line })
+    insert_at = insert_after + 1
   else
-    -- already a blank line: insert feature (and --- if feature_line) right after it
+    -- Build separator: only prepend a blank if the line at insert_after is non-blank
+    local sep_lines
     if config.options.feature_line then
-      vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, { "---", feat_line })
-      insert_at = insert_after + 2
+      sep_lines = prev:match("%S") and { "", "---", feat_line } or { "---", feat_line }
     else
-      vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, { feat_line })
-      insert_at = insert_after + 1
+      sep_lines = prev:match("%S") and { "", feat_line } or { feat_line }
     end
+    vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, sep_lines)
+    insert_at = insert_after + #sep_lines
   end
 
   -- Increment all feature/task/subtask tokens that were pushed down
