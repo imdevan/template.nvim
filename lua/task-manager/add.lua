@@ -49,7 +49,7 @@ function M.add_feature(bufnr, lnum, name)
 
   -- Count features strictly above the insertion line to derive the new number.
   local index  = parser.build_index(bufnr)
-  local new_fn = 1
+  local new_fn = config.options.zero_index and 0 or 1
   for _, t in ipairs(index) do
     if t.type == "feature" and t.lnum < insert_at then
       new_fn = t.fn + 1
@@ -120,7 +120,7 @@ function M.add_task(bufnr, lnum, name)
 
   -- Count tasks in this feature strictly above lnum to derive the new task number
   local index  = parser.build_index(bufnr)
-  local new_tn = 1
+  local new_tn = config.options.zero_index and 0 or 1
   for _, t in ipairs(index) do
     if t.fn == ref_fn and t.type == "task" and t.lnum < lnum then
       new_tn = t.tn + 1
@@ -193,7 +193,7 @@ function M.add_subtask(bufnr, lnum, name)
 
   -- Count subtasks in this task strictly above lnum to derive the new subtask number
   local index  = parser.build_index(bufnr)
-  local new_sn = 1
+  local new_sn = config.options.zero_index and 0 or 1
   for _, t in ipairs(index) do
     if t.fn == ref_fn and t.tn == ref_tn and t.type == "subtask" and t.lnum < lnum then
       new_sn = t.sn + 1

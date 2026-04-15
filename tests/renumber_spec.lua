@@ -163,4 +163,53 @@ describe("renumber", function()
 
   end)
 
+  describe("renumber (full pass) zero_index=true", function()
+    local config = require("task-manager.config")
+    before_each(function() config.setup({ zero_index = true }) end)
+    after_each(function()  config.setup({}) end)
+
+    it("resequences features from 0", function()
+      local buf = make_buf({
+        "## Feature 3: Alpha",
+        "## Feature 7: Beta",
+      })
+      renumber.renumber(buf)
+      local lines = get_lines(buf)
+      assert.equals("## Feature 0: Alpha", lines[1])
+      assert.equals("## Feature 1: Beta",  lines[2])
+    end)
+
+    it("resequences tasks from 0 within each feature", function()
+      local buf = make_buf({
+        "## Feature 0: Alpha",
+        "- [ ] 0.5 Task A",
+        "- [ ] 0.9 Task B",
+        "## Feature 1: Beta",
+        "- [ ] 1.3 Task C",
+      })
+      renumber.renumber(buf)
+      local lines = get_lines(buf)
+      assert.equals("- [ ] 0.0 Task A", lines[2])
+      assert.equals("- [ ] 0.1 Task B", lines[3])
+      assert.equals("- [ ] 1.0 Task C", lines[5])
+    end)
+
+    it("resequences subtasks from 0 and resets per task", function()
+      local buf = make_buf({
+        "## Feature 0: Alpha",
+        "- [ ] 0.0 Task one",
+        "- [ ] 0.0.4 Sub A",
+        "- [ ] 0.0.7 Sub B",
+        "- [ ] 0.1 Task two",
+        "- [ ] 0.1.2 Sub C",
+      })
+      renumber.renumber(buf)
+      local lines = get_lines(buf)
+      assert.equals("- [ ] 0.0.0 Sub A", lines[3])
+      assert.equals("- [ ] 0.0.1 Sub B", lines[4])
+      assert.equals("- [ ] 0.1.0 Sub C", lines[6])
+    end)
+
+  end)
+
 end)

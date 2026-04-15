@@ -479,4 +479,37 @@ describe("add", function()
 
   end)
 
+  describe("zero_index=true", function()
+    before_each(function() config.setup({ zero_index = true }) end)
+    after_each(function()  config.setup({}) end)
+
+    it("add_feature: first feature on blank buffer starts at 0", function()
+      local buf = make_buf({ "" })
+      add.add_feature(buf, 1, "Zero")
+      assert.equals("## Feature 0: Zero", get_lines(buf)[1])
+    end)
+
+    it("add_feature: second feature gets number 1", function()
+      local buf = make_buf({ "## Feature 0: Alpha" })
+      add.add_feature(buf, 1, "Beta")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 0: Alpha", lines[1])
+      assert.equals("## Feature 1: Beta",  lines[3])
+    end)
+
+    it("add_task: first task in feature starts at 0", function()
+      local buf = make_buf({ "## Feature 0: Alpha", "" })
+      add.add_task(buf, 2, "Zero task")
+      assert.equals("- [ ] 0.0 Zero task", get_lines(buf)[2])
+    end)
+
+    it("add_subtask: first subtask in task starts at 0", function()
+      local buf = make_buf({ "## Feature 0: Alpha", "- [ ] 0.0 Task", "" })
+      vim.bo[buf].shiftwidth = 2
+      add.add_subtask(buf, 3, "Zero sub")
+      assert.equals("  - [ ] 0.0.0 Zero sub", get_lines(buf)[3])
+    end)
+
+  end)
+
 end)

@@ -120,25 +120,26 @@ end
 ---@param bufnr integer
 function M.renumber(bufnr)
   local index = parser.build_index(bufnr)
+  local start = config.options.zero_index and 0 or 1
 
-  local feat_seq = 0
-  local task_seq = 0
-  local sub_seq  = 0
+  local feat_seq = start - 1
+  local task_seq = start - 1
+  local sub_seq  = start - 1
   local cur_fn   = nil
   local cur_tn   = nil
 
   for _, t in ipairs(index) do
     if t.type == "feature" then
       feat_seq = feat_seq + 1
-      task_seq = 0
-      sub_seq  = 0
+      task_seq = start - 1
+      sub_seq  = start - 1
       cur_fn   = feat_seq
       cur_tn   = nil
       rewrite(bufnr, t.lnum, t, cur_fn)
 
     elseif t.type == "task" then
       task_seq = task_seq + 1
-      sub_seq  = 0
+      sub_seq  = start - 1
       cur_tn   = task_seq
       rewrite(bufnr, t.lnum, t, cur_fn, cur_tn)
 
