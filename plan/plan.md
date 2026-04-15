@@ -322,3 +322,10 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 14.4.4 Non-fts lines preserved unchanged during full pass
   - [x] 14.5 Write integration tests for add/remove/move/eject (Features 5–8)
     - notes: each test sets up a buffer with known content, runs the operation, and asserts the resulting buffer state
+## Feature 15: consolidate eject
+- [ ] 15.1 TaskEject should eject any feature or task or singular line
+
+## Feature 16: spacing before
+- [ ] 16.1 add spacing before config
+  - same as spacing after for all fts
+  - [ ] 16.1.1 udpate readme
