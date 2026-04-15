@@ -300,6 +300,18 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 - [ ] 13.1 example ignore task
 ```
 
+- [ ] 13.2 add feature feature_line bug
+- when adding a feature where there is a blank line followed by a feature line the feature and line get added after the existing line. 
+- consider the following
+```
+  - [ ] 13.3.1 foo
+  - [ ] 13.3.2 bar
+
+---
+## Feature 14: fake feature
+```
+
+
 ## Feature 14: Testing infrastructure
   - [x] 14.1 Choose and configure test runner
     - notes: use plenary.nvim busted wrapper; tests run in headless Neovim
@@ -323,7 +335,12 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
   - [x] 14.5 Write integration tests for add/remove/move/eject (Features 5–8)
     - notes: each test sets up a buffer with known content, runs the operation, and asserts the resulting buffer state
 ## Feature 15: consolidate eject
-- [ ] 15.1 TaskEject should eject any feature or task or singular line
+- [x] 15.1 TaskEject should eject any feature or task or singular line
+  - [x] 15.1.1 default keybinding tee
+    - added eject_cursor() to eject.lua; dispatches to eject_feature/task/subtask based on parse_line result
+    - registered TaskEject command in init.lua
+    - added <leader>tee keymap
+  - [ ] 15.1.2 update readme
 
 ## Feature 16: spacing before
 - [ ] 16.1 add spacing before config
