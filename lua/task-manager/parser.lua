@@ -75,17 +75,37 @@ function M.parse_line(line)
   return nil
 end
 
+---Return a set of 1-indexed line numbers that fall inside fenced code blocks.
+---@param bufnr integer
+---@return table  set keyed by line number
+local function fenced_lines(bufnr)
+  local fenced = {}
+  local in_fence = false
+  for i = 1, utils.line_count(bufnr) do
+    local line = utils.get_line(bufnr, i)
+    if line:match("^%s*```") then
+      in_fence = not in_fence
+    elseif in_fence then
+      fenced[i] = true
+    end
+  end
+  return fenced
+end
+
 ---Scan upward from line n to find the nearest fts token.
 ---Returns the token table (with its line number added as .lnum), or nil.
 ---@param bufnr integer
 ---@param n integer  starting line (1-indexed, inclusive)
 ---@return table|nil
 function M.context_at(bufnr, n)
+  local fenced = fenced_lines(bufnr)
   for i = n, 1, -1 do
-    local token = M.parse_line(utils.get_line(bufnr, i))
-    if token then
-      token.lnum = i
-      return token
+    if not fenced[i] then
+      local token = M.parse_line(utils.get_line(bufnr, i))
+      if token then
+        token.lnum = i
+        return token
+      end
     end
   end
   return nil
@@ -95,12 +115,15 @@ end
 ---@param bufnr integer
 ---@return table[]  list of token tables each with a .lnum field
 function M.build_index(bufnr)
-  local index = {}
+  local index  = {}
+  local fenced = fenced_lines(bufnr)
   for i = 1, utils.line_count(bufnr) do
-    local token = M.parse_line(utils.get_line(bufnr, i))
-    if token then
-      token.lnum = i
-      index[#index + 1] = token
+    if not fenced[i] then
+      local token = M.parse_line(utils.get_line(bufnr, i))
+      if token then
+        token.lnum = i
+        index[#index + 1] = token
+      end
     end
   end
   return index

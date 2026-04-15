@@ -133,6 +133,40 @@ describe("parser", function()
       local buf = make_buf({ "# Context", "just prose" })
       assert.same({}, parser.build_index(buf))
     end)
+
+    it("ignores fts tokens inside fenced code blocks", function()
+      local buf = make_buf({
+        "## Feature 1: Real",
+        "- [ ] 1.1 Real task",
+        "```",
+        "## Feature 2: Fake",
+        "- [ ] 2.1 Fake task",
+        "```",
+        "- [ ] 1.2 Also real",
+      })
+      local idx = parser.build_index(buf)
+      assert.equals(3, #idx)
+      assert.equals("feature", idx[1].type) ; assert.equals(1, idx[1].lnum)
+      assert.equals("task",    idx[2].type) ; assert.equals(2, idx[2].lnum)
+      assert.equals("task",    idx[3].type) ; assert.equals(7, idx[3].lnum)
+    end)
+  end)
+
+  describe("context_at (code fence)", function()
+    it("skips fts tokens inside fenced code blocks when scanning upward", function()
+      local buf = make_buf({
+        "## Feature 1: Real",
+        "```",
+        "## Feature 99: Fake",
+        "```",
+        "  some note",
+      })
+      -- scanning from line 5 (a note); nearest real fts above is Feature 1 on line 1
+      local t = parser.context_at(buf, 5)
+      assert.equals("feature", t.type)
+      assert.equals(1, t.fn)
+      assert.equals(1, t.lnum)
+    end)
   end)
 
 end)
