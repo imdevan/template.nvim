@@ -291,6 +291,9 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
   - do not show shadow text
   - do not consider in buffer/summary total
   - [x] 13.1.1 added fenced_lines helper to parser.lua; build_index and context_at skip fenced lines
+  - [x] 13.1.2 ignore on next / previous go to commands
+    - [x] 13.1.2.1 exported fenced_lines from parser.lua as M.fenced_lines
+    - [x] 13.1.2.2 is_incomplete and is_complete in navigate.lua skip fenced lines via fenced set
 
 ```bash
 ## Feature 13: test should be ignored
