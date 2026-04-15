@@ -271,17 +271,21 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 
 ## Feature 13: fixes
 
-- [ ] 13.1 allow for 0 based index / numbers
+- [x] 13.1 allow for 0 based index / numbers
   - respected by total tasks on page
   - show shadow text
   - include in TaskGoTo
   - still start feature count 1 if taf is called on blank page
   - update add task /subtask to work with this change
-```
-- [ ] 13.1 ignore text in code blocks
+- [ ] 13.1 ignore text in code blocks "```"
   - do not consider in fts lookups / lookbacks
   - do not show shadow text
   - do not consider in buffer/summary total
+
+```
+## Feature 13: test should be ignored
+- [ ] 13.1 example ignore task
+```
 
 
 ## Feature 14: version
