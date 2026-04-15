@@ -207,4 +207,19 @@ function M.eject_subtask_cursor()
 	M.eject_subtask(bufnr, ctx.lnum)
 end
 
+---Eject whatever is under the cursor: feature, task, subtask, or plain line (no-op).
+function M.eject_cursor()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local lnum  = utils.cursor_line()
+	local token = parser.parse_line(utils.get_line(bufnr, lnum))
+	if not token then return end
+	if token.type == "feature" then
+		M.eject_feature(bufnr, lnum)
+	elseif token.type == "task" then
+		M.eject_task(bufnr, lnum)
+	elseif token.type == "subtask" then
+		M.eject_subtask(bufnr, lnum)
+	end
+end
+
 return M
