@@ -300,37 +300,25 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 - [ ] 13.1 example ignore task
 ```
 
-## Feature 14: version
-
-- [ ] 14.1 add version token
-
-```
-# {semver}
-```
-
-- [ ] 14.2 version shadow text shows tasks current and total 
-- [ ] 14.3 add/remove/move/eject version
-
-
-## Feature 15: Testing infrastructure
-  - [x] 15.1 Choose and configure test runner
+## Feature 14: Testing infrastructure
+  - [x] 14.1 Choose and configure test runner
     - notes: use plenary.nvim busted wrapper; tests run in headless Neovim
-    - [x] 15.1.1 Create `tests/minimal_init.lua` to bootstrap plenary and the plugin
+    - [x] 14.1.1 Create `tests/minimal_init.lua` to bootstrap plenary and the plugin
       - note: butt
-    - [x] 15.1.2 Document local run command in README
-  - [x] 15.2 Write unit tests for config module
-    - [x] 15.2.1 Default values are set correctly
-    - [x] 15.2.2 User opts are deep-merged over defaults
-  - [x] 15.3 Write unit tests for parsing (Feature 2)
-    - [x] 15.3.1 Feature line detection
-    - [x] 15.3.2 Task line detection
-    - [x] 15.3.3 Subtask line detection
-    - [x] 15.3.4 Upward scan resolves correct fts context
-    - [x] 15.3.5 build_index returns ordered token list with correct lnum
-  - [x] 15.4 Write unit tests for renumbering engine (Feature 3)
-    - [x] 15.4.1 Push-down increments correct tokens
-    - [x] 15.4.2 Push-up decrements correct tokens
-    - [x] 15.4.3 Full renumber pass resequences correctly
-    - [x] 15.4.4 Non-fts lines preserved unchanged during full pass
-  - [x] 15.5 Write integration tests for add/remove/move/eject (Features 5–8)
+    - [x] 14.1.2 Document local run command in README
+  - [x] 14.2 Write unit tests for config module
+    - [x] 14.2.1 Default values are set correctly
+    - [x] 14.2.2 User opts are deep-merged over defaults
+  - [x] 14.3 Write unit tests for parsing (Feature 2)
+    - [x] 14.3.1 Feature line detection
+    - [x] 14.3.2 Task line detection
+    - [x] 14.3.3 Subtask line detection
+    - [x] 14.3.4 Upward scan resolves correct fts context
+    - [x] 14.3.5 build_index returns ordered token list with correct lnum
+  - [x] 14.4 Write unit tests for renumbering engine (Feature 3)
+    - [x] 14.4.1 Push-down increments correct tokens
+    - [x] 14.4.2 Push-up decrements correct tokens
+    - [x] 14.4.3 Full renumber pass resequences correctly
+    - [x] 14.4.4 Non-fts lines preserved unchanged during full pass
+  - [x] 14.5 Write integration tests for add/remove/move/eject (Features 5–8)
     - notes: each test sets up a buffer with known content, runs the operation, and asserts the resulting buffer state
