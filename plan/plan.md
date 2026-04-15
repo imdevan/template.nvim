@@ -119,10 +119,12 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
       - do not insert and "hijack remaining subtasks"
       - added find_task_insert_point helper; scans forward past subtasks and non-fts notes before inserting
     - [x] 5.3.5 move cursor to added task
-    - [ ] 5.3.6 when created while cursor on is on blank line
+    - [x] 5.3.6 when created while cursor on is on blank line
       - specifically after the last task/subtask before the next feature
         - create the task (and or subtask) on the current line and create a new blank line under the task/subtask
         - use the feature number of the current/parent feature 
+      - [x] 5.3.6.1 add_task_cursor detects blank line, deletes it, inserts task at that position, ensures blank line follows
+      - [x] 5.3.6.2 add_task resolves context from lnum-1 so a feature header at lnum doesn't pollute parent lookup
   - [x] 5.4 Add subtask
     - notes: inserts subtask under the task containing the cursor; pushes sibling subtasks down
     - when adding sub task: 
@@ -131,7 +133,6 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.4.1 Resolve parent task from cursor context
     - [x] 5.4.2 Insert subtask line and trigger push-down
     - [ ] 5.4.3 insert after any non-task notes / items
-
 ## Feature 6: Remove fts
   - [x] 6.1 Remove feature
     - notes: deletes feature header and all its tasks/subtasks; pushes features below up
