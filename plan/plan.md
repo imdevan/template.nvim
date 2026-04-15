@@ -277,16 +277,16 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
   - include in TaskGoTo
   - still start feature count 1 if taf is called on blank page
   - update add task /subtask to work with this change
-- [ ] 13.1 ignore text in code blocks "```"
+- [x] 13.1 ignore text in code blocks "```"
   - do not consider in fts lookups / lookbacks
   - do not show shadow text
   - do not consider in buffer/summary total
+  - [x] 13.1.1 added fenced_lines helper to parser.lua; build_index and context_at skip fenced lines
 
 ```
 ## Feature 13: test should be ignored
 - [ ] 13.1 example ignore task
 ```
-
 
 ## Feature 14: version
 
