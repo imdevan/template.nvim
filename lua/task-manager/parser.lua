@@ -92,6 +92,13 @@ local function fenced_lines(bufnr)
   return fenced
 end
 
+---Return a set of 1-indexed line numbers that fall inside fenced code blocks.
+---@param bufnr integer
+---@return table  set keyed by line number
+function M.fenced_lines(bufnr)
+  return fenced_lines(bufnr)
+end
+
 ---Scan upward from line n to find the nearest fts token.
 ---Returns the token table (with its line number added as .lnum), or nil.
 ---@param bufnr integer

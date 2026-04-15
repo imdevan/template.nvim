@@ -135,34 +135,26 @@ end
 ---Check if a line contains an incomplete (unchecked) task or subtask
 ---@param bufnr integer
 ---@param lnum integer
+---@param fenced table  set of fenced line numbers to skip
 ---@return boolean
-local function is_incomplete(bufnr, lnum)
+local function is_incomplete(bufnr, lnum, fenced)
+  if fenced[lnum] then return false end
   local line = utils.get_line(bufnr, lnum)
   local token = parser.parse_line(line)
-  
-  -- Only tasks and subtasks can be incomplete (features don't have checkboxes)
-  if not token or token.type == "feature" then
-    return false
-  end
-  
-  -- Check if the line contains [ ] (unchecked)
+  if not token or token.type == "feature" then return false end
   return line:match("%[ %]") ~= nil
 end
 
 ---Check if a line contains a complete (checked) task or subtask
 ---@param bufnr integer
 ---@param lnum integer
+---@param fenced table  set of fenced line numbers to skip
 ---@return boolean
-local function is_complete(bufnr, lnum)
+local function is_complete(bufnr, lnum, fenced)
+  if fenced[lnum] then return false end
   local line = utils.get_line(bufnr, lnum)
   local token = parser.parse_line(line)
-  
-  -- Only tasks and subtasks can be complete (features don't have checkboxes)
-  if not token or token.type == "feature" then
-    return false
-  end
-  
-  -- Check if the line contains [x] (checked)
+  if not token or token.type == "feature" then return false end
   return line:match("%[x%]") ~= nil
 end
 
@@ -173,25 +165,21 @@ end
 ---@return boolean  true if found and jumped, false otherwise
 function M.goto_next_incomplete(bufnr, start_line, wrap)
   local total_lines = utils.line_count(bufnr)
-  
-  -- Search from start_line + 1 to end of buffer
+  local fenced = parser.fenced_lines(bufnr)
   for lnum = start_line + 1, total_lines do
-    if is_incomplete(bufnr, lnum) then
+    if is_incomplete(bufnr, lnum, fenced) then
       utils.set_cursor_line(lnum)
       return true
     end
   end
-  
-  -- If wrap is enabled, search from beginning to start_line
   if wrap then
     for lnum = 1, start_line do
-      if is_incomplete(bufnr, lnum) then
+      if is_incomplete(bufnr, lnum, fenced) then
         utils.set_cursor_line(lnum)
         return true
       end
     end
   end
-  
   return false
 end
 
@@ -201,25 +189,22 @@ end
 ---@param wrap boolean  whether to wrap around to the end
 ---@return boolean  true if found and jumped, false otherwise
 function M.goto_prev_incomplete(bufnr, start_line, wrap)
-  -- Search from start_line - 1 to beginning of buffer
+  local fenced = parser.fenced_lines(bufnr)
   for lnum = start_line - 1, 1, -1 do
-    if is_incomplete(bufnr, lnum) then
+    if is_incomplete(bufnr, lnum, fenced) then
       utils.set_cursor_line(lnum)
       return true
     end
   end
-  
-  -- If wrap is enabled, search from end to start_line
   if wrap then
     local total_lines = utils.line_count(bufnr)
     for lnum = total_lines, start_line, -1 do
-      if is_incomplete(bufnr, lnum) then
+      if is_incomplete(bufnr, lnum, fenced) then
         utils.set_cursor_line(lnum)
         return true
       end
     end
   end
-  
   return false
 end
 
@@ -250,25 +235,21 @@ end
 ---@return boolean  true if found and jumped, false otherwise
 function M.goto_next_complete(bufnr, start_line, wrap)
   local total_lines = utils.line_count(bufnr)
-  
-  -- Search from start_line + 1 to end of buffer
+  local fenced = parser.fenced_lines(bufnr)
   for lnum = start_line + 1, total_lines do
-    if is_complete(bufnr, lnum) then
+    if is_complete(bufnr, lnum, fenced) then
       utils.set_cursor_line(lnum)
       return true
     end
   end
-  
-  -- If wrap is enabled, search from beginning to start_line
   if wrap then
     for lnum = 1, start_line do
-      if is_complete(bufnr, lnum) then
+      if is_complete(bufnr, lnum, fenced) then
         utils.set_cursor_line(lnum)
         return true
       end
     end
   end
-  
   return false
 end
 
@@ -278,25 +259,22 @@ end
 ---@param wrap boolean  whether to wrap around to the end
 ---@return boolean  true if found and jumped, false otherwise
 function M.goto_prev_complete(bufnr, start_line, wrap)
-  -- Search from start_line - 1 to beginning of buffer
+  local fenced = parser.fenced_lines(bufnr)
   for lnum = start_line - 1, 1, -1 do
-    if is_complete(bufnr, lnum) then
+    if is_complete(bufnr, lnum, fenced) then
       utils.set_cursor_line(lnum)
       return true
     end
   end
-  
-  -- If wrap is enabled, search from end to start_line
   if wrap then
     local total_lines = utils.line_count(bufnr)
     for lnum = total_lines, start_line, -1 do
-      if is_complete(bufnr, lnum) then
+      if is_complete(bufnr, lnum, fenced) then
         utils.set_cursor_line(lnum)
         return true
       end
     end
   end
-  
   return false
 end
 

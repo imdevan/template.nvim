@@ -643,4 +643,41 @@ describe("navigate", function()
       vim.api.nvim_buf_delete(bufnr, { force = true })
     end)
   end)
+
+  describe("fenced code block ignored", function()
+    local function make_buf(lines)
+      local bufnr = vim.api.nvim_create_buf(false, true)
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+      vim.api.nvim_set_current_buf(bufnr)
+      return bufnr
+    end
+
+    it("goto_next_incomplete skips tasks inside fenced blocks", function()
+      local buf = make_buf({
+        "## Feature 1: Real",
+        "- [x] 1.1 Done",
+        "```",
+        "- [ ] 1.2 Fenced incomplete",
+        "```",
+        "- [ ] 1.3 Real incomplete",
+      })
+      navigate.goto_next_incomplete(buf, 1, false)
+      assert.equals(6, vim.api.nvim_win_get_cursor(0)[1])
+      vim.api.nvim_buf_delete(buf, { force = true })
+    end)
+
+    it("goto_next_complete skips tasks inside fenced blocks", function()
+      local buf = make_buf({
+        "## Feature 1: Real",
+        "- [ ] 1.1 Incomplete",
+        "```",
+        "- [x] 1.2 Fenced complete",
+        "```",
+        "- [x] 1.3 Real complete",
+      })
+      navigate.goto_next_complete(buf, 1, false)
+      assert.equals(6, vim.api.nvim_win_get_cursor(0)[1])
+      vim.api.nvim_buf_delete(buf, { force = true })
+    end)
+  end)
 end)
