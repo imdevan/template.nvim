@@ -315,6 +315,60 @@ describe("add", function()
       assert.equals("- [ ] 1.3 Task two",     lines[5])
     end)
 
+    -- 5.3.4: insert after last subtask of current task (not between task and its subtasks)
+    it("inserts after last subtask when cursor is on a task with subtasks", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "  - [ ] 1.1.2 Sub two",
+        "- [ ] 1.2 Task two",
+      })
+      -- cursor on line 2 (task one); new task should go after sub two, not between task and subs
+      add.add_task(buf, 5, "New task")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",      lines[1])
+      assert.equals("- [ ] 1.1 Task one",       lines[2])
+      assert.equals("  - [ ] 1.1.1 Sub one",    lines[3])
+      assert.equals("  - [ ] 1.1.2 Sub two",    lines[4])
+      assert.equals("- [ ] 1.2 New task",       lines[5])
+      assert.equals("- [ ] 1.3 Task two",       lines[6])
+    end)
+
+    it("inserts after non-fts notes below the current task", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  some note",
+        "- [ ] 1.2 Task two",
+      })
+      add.add_task(buf, 4, "New task")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task one",   lines[2])
+      assert.equals("  some note",           lines[3])
+      assert.equals("- [ ] 1.2 New task",   lines[4])
+      assert.equals("- [ ] 1.3 Task two",   lines[5])
+    end)
+
+    it("inserts after subtasks and non-fts notes below the current task", function()
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "  a note",
+        "- [ ] 1.2 Task two",
+      })
+      add.add_task(buf, 5, "New task")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",      lines[1])
+      assert.equals("- [ ] 1.1 Task one",       lines[2])
+      assert.equals("  - [ ] 1.1.1 Sub one",    lines[3])
+      assert.equals("  a note",                  lines[4])
+      assert.equals("- [ ] 1.2 New task",       lines[5])
+      assert.equals("- [ ] 1.3 Task two",       lines[6])
+    end)
+
   end)
 
   describe("add_subtask", function()
