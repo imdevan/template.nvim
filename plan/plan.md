@@ -115,8 +115,9 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.3.1 Resolve parent feature from cursor context
     - [x] 5.3.2 Insert task line and trigger push-down
     - [x] 5.3.3 Task should be added at line below current; and use the same indention as the previous  task (or feature if feature is the next fts above the added task)
-    - [ ] 5.3.4 task should always be added after the last sub task of the current or last task; and after any non-task notes / items
+    - [x] 5.3.4 task should always be added after the last sub task of the current or last task; and after any non-task notes / items
       - do not insert and "hijack remaining subtasks"
+      - added find_task_insert_point helper; scans forward past subtasks and non-fts notes before inserting
   - [x] 5.4 Add subtask
     - notes: inserts subtask under the task containing the cursor; pushes sibling subtasks down
     - when adding sub task: 
@@ -271,11 +272,11 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 ## Feature 13: fixes
 
 - [ ] 13.1 allow for 0 based index / numbers
-- e.g. 
-
-```
-## Feature 0: config
-0.1 task 0.1
+  - respected by total tasks on page
+  - show shadow text
+  - include in TaskGoTo
+  - still start feature count 1 if taf is called on blank page
+  - update add task /subtask to work with this change
 ```
 - [ ] 13.1 ignore text in code blocks
   - do not consider in fts lookups / lookbacks
