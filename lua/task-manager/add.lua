@@ -250,13 +250,31 @@ function M.add_subtask(bufnr, lnum, name)
   return true
 end
 
+---Scan forward from `lnum` past non-fts notes, stopping before the next
+---subtask, task, feature, blank line, or end of buffer.
+---@param bufnr integer
+---@param lnum  integer  1-indexed starting line
+---@return integer  line after which the new subtask should be inserted
+local function find_subtask_insert_point(bufnr, lnum)
+  local total = utils.line_count(bufnr)
+  local insert_after = lnum
+  for i = lnum + 1, total do
+    local line = utils.get_line(bufnr, i)
+    local t = parser.parse_line(line)
+    if t then break end
+    if not line:match("%S") then break end
+    insert_after = i
+  end
+  return insert_after
+end
+
 ---Prompt for a subtask name then insert on the line below the cursor.
 function M.add_subtask_cursor()
   local bufnr = vim.api.nvim_get_current_buf()
   local lnum  = utils.cursor_line()
   vim.ui.input({ prompt = "Subtask name: " }, function(name)
     if not name or name == "" then return end
-    M.add_subtask(bufnr, lnum + 1, name)
+    M.add_subtask(bufnr, find_subtask_insert_point(bufnr, lnum) + 1, name)
   end)
 end
 

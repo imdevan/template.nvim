@@ -495,6 +495,25 @@ describe("add", function()
       assert.equals("    - [ ] 1.1.1 First sub",  lines[3])
     end)
 
+    it("inserts after non-fts notes below the current subtask", function()
+      local buf = make_sw2({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "  a note",
+        "- [ ] 1.2 Task two",
+      })
+      -- cursor on sub one (line 3); find_subtask_insert_point scans past note → inserts at line 5
+      add.add_subtask(buf, 5, "Sub two")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",      lines[1])
+      assert.equals("- [ ] 1.1 Task one",       lines[2])
+      assert.equals("  - [ ] 1.1.1 Sub one",    lines[3])
+      assert.equals("  a note",                  lines[4])
+      assert.equals("  - [ ] 1.1.2 Sub two",    lines[5])
+      assert.equals("- [ ] 1.2 Task two",       lines[6])
+    end)
+
   end)
 
   describe("zero_index=true", function()
