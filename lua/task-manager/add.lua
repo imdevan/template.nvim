@@ -148,13 +148,31 @@ function M.add_task(bufnr, lnum, name)
   return true
 end
 
----Prompt for a task name then insert on the line below the cursor.
+---Scan forward from `lnum` past subtasks and non-fts notes, stopping before
+---the next task, next feature, or end of buffer.
+---@param bufnr integer
+---@param lnum  integer  1-indexed starting line
+---@return integer  line after which the new task should be inserted
+local function find_task_insert_point(bufnr, lnum)
+  local total = utils.line_count(bufnr)
+  local insert_after = lnum
+  for i = lnum + 1, total do
+    local line = utils.get_line(bufnr, i)
+    local t = parser.parse_line(line)
+    if t and (t.type == "task" or t.type == "feature") then break end
+    if not line:match("%S") then break end  -- stop at blank lines
+    insert_after = i
+  end
+  return insert_after
+end
+
+---Prompt for a task name then insert after the last subtask/note of the current task.
 function M.add_task_cursor()
   local bufnr = vim.api.nvim_get_current_buf()
   local lnum  = utils.cursor_line()
   vim.ui.input({ prompt = "Task name: " }, function(name)
     if not name or name == "" then return end
-    M.add_task(bufnr, lnum + 1, name)
+    M.add_task(bufnr, find_task_insert_point(bufnr, lnum) + 1, name)
   end)
 end
 
