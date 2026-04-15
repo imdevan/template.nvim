@@ -47,8 +47,31 @@ just test
     shadow = {
       auto_attach = true,
     },
+    feature_line = false,
+    zero_index   = false,
   },
 }
+```
+
+### `feature_line`
+
+When `true`, a `---` separator is inserted between features on add and sort. Defaults to `false`.
+
+```
+## Feature 1: Auth
+
+---
+## Feature 2: Dashboard
+```
+
+### `zero_index`
+
+When `true`, feature, task, and subtask numbering starts at `0` instead of `1`. Defaults to `false`.
+
+```
+## Feature 0: Setup
+- [ ] 0.0 Install dependencies
+  - [ ] 0.0.0 Add to package.json
 ```
 
 ## Keymaps
