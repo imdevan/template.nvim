@@ -369,6 +369,24 @@ describe("add", function()
       assert.equals("- [ ] 1.3 Task two",       lines[6])
     end)
 
+    it("uses parent feature number when inserting at blank line before next feature", function()
+      -- simulates: cursor on blank line between Feature 1's last task and Feature 2 header;
+      -- blank is deleted before calling add_task, so lnum now points at Feature 2 header
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        -- blank line deleted by add_task_cursor before this call:
+        "## Feature 2: Beta",
+      })
+      -- lnum=3 points at Feature 2 header; context should resolve to Feature 1
+      add.add_task(buf, 3, "New task")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task one",   lines[2])
+      assert.equals("- [ ] 1.2 New task",   lines[3])
+      assert.equals("## Feature 2: Beta",   lines[4])
+    end)
+
   end)
 
   describe("add_subtask", function()

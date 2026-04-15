@@ -113,8 +113,9 @@ end
 ---@param name  string   task name
 ---@return boolean  false if no parent feature could be resolved
 function M.add_task(bufnr, lnum, name)
-  -- Resolve parent feature by scanning upward from lnum
-  local ctx = parser.context_at(bufnr, lnum)
+  -- Resolve parent feature by scanning upward from the line above the insertion point
+  -- (lnum itself is the line that will be pushed down, not the context we belong to)
+  local ctx = parser.context_at(bufnr, lnum - 1)
   if not ctx then return false end
   local ref_fn = ctx.fn
 
@@ -167,13 +168,31 @@ local function find_task_insert_point(bufnr, lnum)
 end
 
 ---Prompt for a task name then insert after the last subtask/note of the current task.
+---When the cursor is on a blank line, the task replaces that blank line and a new
+---blank line is inserted below it.
 function M.add_task_cursor()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local lnum  = utils.cursor_line()
+  local bufnr     = vim.api.nvim_get_current_buf()
+  local lnum      = utils.cursor_line()
+  local on_blank  = not utils.get_line(bufnr, lnum):match("%S")
   vim.ui.input({ prompt = "Task name: " }, function(name)
     if not name or name == "" then return end
-    local insert_at = M.add_task(bufnr, find_task_insert_point(bufnr, lnum) + 1, name)
+    local target
+    if on_blank then
+      -- Remove the blank line so add_task inserts at that position
+      vim.api.nvim_buf_set_lines(bufnr, lnum - 1, lnum, false, {})
+      target = lnum
+    else
+      target = find_task_insert_point(bufnr, lnum) + 1
+    end
+    local insert_at = M.add_task(bufnr, target, name)
     if insert_at then
+      -- Ensure a blank line follows the new task (replacing any existing blank or inserting one)
+      if on_blank then
+        local next = utils.get_line(bufnr, insert_at + 1)
+        if not next or next:match("%S") then
+          vim.api.nvim_buf_set_lines(bufnr, insert_at, insert_at, false, { "" })
+        end
+      end
       vim.api.nvim_win_set_cursor(0, { insert_at, 0 })
     end
   end)
