@@ -145,7 +145,7 @@ function M.add_task(bufnr, lnum, name)
   -- Increment sibling tasks (and their subtasks) at or below the insertion line
   renumber.push_down(bufnr, lnum, "task", ref_fn)
   insert_blank_lines(bufnr, lnum, config.options.spacing.after_task)
-  return true
+  return lnum
 end
 
 ---Scan forward from `lnum` past subtasks and non-fts notes, stopping before
@@ -172,7 +172,10 @@ function M.add_task_cursor()
   local lnum  = utils.cursor_line()
   vim.ui.input({ prompt = "Task name: " }, function(name)
     if not name or name == "" then return end
-    M.add_task(bufnr, find_task_insert_point(bufnr, lnum) + 1, name)
+    local insert_at = M.add_task(bufnr, find_task_insert_point(bufnr, lnum) + 1, name)
+    if insert_at then
+      vim.api.nvim_win_set_cursor(0, { insert_at, 0 })
+    end
   end)
 end
 
