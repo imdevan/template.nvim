@@ -173,6 +173,24 @@ describe("add", function()
         assert.equals("---",                  lines[3])
         assert.equals("## Feature 2: Beta",  lines[4])
       end)
+
+      it("does not duplicate --- when existing blank+--- already precedes next feature", function()
+        local buf = make_buf({
+          "## Feature 1: Alpha",
+          "- [ ] 1.1 Task one",
+          "",
+          "---",
+          "## Feature 2: Beta",
+        })
+        add.add_feature(buf, 1, "New")
+        local lines = get_lines(buf)
+        assert.equals("## Feature 1: Alpha", lines[1])
+        assert.equals("- [ ] 1.1 Task one",  lines[2])
+        assert.equals("",                     lines[3])
+        assert.equals("---",                  lines[4])
+        assert.equals("## Feature 2: New",   lines[5])
+        assert.equals("## Feature 3: Beta",  lines[6])
+      end)
     end)
 
   end)
