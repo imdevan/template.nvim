@@ -247,7 +247,7 @@ function M.add_subtask(bufnr, lnum, name)
   -- Increment sibling subtasks at or below the insertion line
   renumber.push_down(bufnr, lnum, "subtask", ref_fn, ref_tn)
   insert_blank_lines(bufnr, lnum, config.options.spacing.after_subtask)
-  return true
+  return lnum
 end
 
 ---Scan forward from `lnum` past non-fts notes, stopping before the next
@@ -274,7 +274,10 @@ function M.add_subtask_cursor()
   local lnum  = utils.cursor_line()
   vim.ui.input({ prompt = "Subtask name: " }, function(name)
     if not name or name == "" then return end
-    M.add_subtask(bufnr, find_subtask_insert_point(bufnr, lnum) + 1, name)
+    local insert_at = M.add_subtask(bufnr, find_subtask_insert_point(bufnr, lnum) + 1, name)
+    if insert_at then
+      vim.api.nvim_win_set_cursor(0, { insert_at, 0 })
+    end
   end)
 end
 

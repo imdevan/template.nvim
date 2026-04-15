@@ -135,6 +135,7 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - [x] 5.4.3 insert after any non-task notes / items
       - [x] 5.4.3.1 added find_subtask_insert_point helper; scans forward past non-fts notes before inserting
       - [x] 5.4.3.2 add_subtask_cursor uses find_subtask_insert_point instead of lnum+1
+    - [x] 5.4.4 move cursor to subtask on add
 ## Feature 6: Remove fts
   - [x] 6.1 Remove feature
     - notes: deletes feature header and all its tasks/subtasks; pushes features below up
