@@ -16,10 +16,12 @@ end
 
 ---Find the last content line of the feature that contains `lnum`, scanning
 ---forward until the next feature header (or end of buffer).  Returns the
----1-indexed line number after which the new feature should be inserted.
+---1-indexed line number after which the new feature should be inserted,
+---plus the last real-content line (used to trim excess blanks before a sep).
 ---@param bufnr integer
 ---@param lnum  integer  1-indexed reference line (cursor position)
 ---@return integer  insertion point (new feature goes at this line + 1)
+---@return integer  last content line (before any trailing blanks / sep)
 local function find_feature_end(bufnr, lnum)
   local total = utils.line_count(bufnr)
   local last_content = lnum
@@ -39,7 +41,7 @@ local function find_feature_end(bufnr, lnum)
   end
   -- If a trailing --- was found (with only blanks between it and the next feature),
   -- return it so the new feature is inserted right after it (reusing the separator).
-  return found_sep or last_content
+  return found_sep or last_content, last_content
 end
 
 ---Insert a new feature header after the end of the current feature block,
@@ -50,7 +52,7 @@ end
 ---@param lnum  integer  1-indexed cursor line (used to locate current feature)
 ---@param name  string   feature name
 function M.add_feature(bufnr, lnum, name)
-  local insert_after = find_feature_end(bufnr, lnum)
+  local insert_after, last_content = find_feature_end(bufnr, lnum)
   local insert_at    = insert_after + 1
 
   -- Count features strictly above the insertion line to derive the new number.
@@ -67,14 +69,42 @@ function M.add_feature(bufnr, lnum, name)
   local prev = utils.get_line(bufnr, insert_after)
   local prev_is_sep = prev:match("^%s*---%s*$")
 
+  local before_n = config.options.spacing.before_feature
   if not prev:match("%S") and insert_after == 1 then
     -- buffer is effectively empty → insert at top
     vim.api.nvim_buf_set_lines(bufnr, 0, 0, false, { feat_line })
     insert_at = 1
   elseif prev_is_sep then
+    -- Collapse any extra blank lines between last_content and the --- to exactly one.
+    -- Lines last_content+1 .. insert_after-1 should be exactly one blank.
+    local blanks_before_sep = insert_after - 1 - last_content
+    if blanks_before_sep > 1 then
+      -- Remove the extra blank lines (keep exactly one)
+      vim.api.nvim_buf_set_lines(bufnr, last_content, insert_after - 1, false, { "" })
+      insert_after = last_content + 2  -- last_content + 1 blank + the ---
+    end
     -- insert_after landed on an existing --- : just insert the feature after it
+    insert_blank_lines(bufnr, insert_after, before_n)
+    insert_after = insert_after + before_n
     vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, { feat_line })
     insert_at = insert_after + 1
+    -- If feature_line=true, also insert a separator before the next pushed-down feature
+    if config.options.feature_line then
+      local total = utils.line_count(bufnr)
+      for i = insert_at + 1, total do
+        local t = parser.parse_line(utils.get_line(bufnr, i))
+        if t and t.type == "feature" then
+          -- insert blank + --- before this feature
+          local prev_line = utils.get_line(bufnr, i - 1)
+          if prev_line:match("%S") then
+            vim.api.nvim_buf_set_lines(bufnr, i - 1, i - 1, false, { "", "---" })
+          else
+            vim.api.nvim_buf_set_lines(bufnr, i - 1, i - 1, false, { "---" })
+          end
+          break
+        end
+      end
+    end
   else
     -- Build separator: only prepend a blank if the line at insert_after is non-blank
     local sep_lines
@@ -83,6 +113,9 @@ function M.add_feature(bufnr, lnum, name)
     else
       sep_lines = prev:match("%S") and { "", feat_line } or { feat_line }
     end
+    -- Prepend before_feature blank lines
+    local blanks = vim.fn["repeat"]({ "" }, before_n)
+    sep_lines = vim.list_extend(blanks, sep_lines)
     vim.api.nvim_buf_set_lines(bufnr, insert_after, insert_after, false, sep_lines)
     insert_at = insert_after + #sep_lines
   end
@@ -141,6 +174,9 @@ function M.add_task(bufnr, lnum, name)
 
   local line = indent .. utils.format_fts(config.options.tokens.task, ref_fn, new_tn, nil, name)
 
+  local before_n = config.options.spacing.before_task
+  insert_blank_lines(bufnr, lnum - 1, before_n)
+  lnum = lnum + before_n
   vim.api.nvim_buf_set_lines(bufnr, lnum - 1, lnum - 1, false, { line })
 
   -- Increment sibling tasks (and their subtasks) at or below the insertion line
@@ -242,6 +278,9 @@ function M.add_subtask(bufnr, lnum, name)
 
   local line = indent .. utils.format_fts(config.options.tokens.subtask, ref_fn, ref_tn, new_sn, name)
 
+  local before_n = config.options.spacing.before_subtask
+  insert_blank_lines(bufnr, lnum - 1, before_n)
+  lnum = lnum + before_n
   vim.api.nvim_buf_set_lines(bufnr, lnum - 1, lnum - 1, false, { line })
 
   -- Increment sibling subtasks at or below the insertion line

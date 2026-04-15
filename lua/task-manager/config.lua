@@ -17,9 +17,12 @@ local M = {}
 ---@field enabled boolean  master switch for all keymaps
 
 ---@class TaskManagerSpacing
----@field after_feature integer  blank lines inserted after a new feature header
----@field after_task    integer  blank lines inserted after a new task line
----@field after_subtask integer  blank lines inserted after a new subtask line
+---@field after_feature  integer  blank lines inserted after a new feature header
+---@field after_task     integer  blank lines inserted after a new task line
+---@field after_subtask  integer  blank lines inserted after a new subtask line
+---@field before_feature integer  blank lines inserted before a new feature header
+---@field before_task    integer  blank lines inserted before a new task line
+---@field before_subtask integer  blank lines inserted before a new subtask line
 
 ---@class TaskManagerShadow
 ---@field auto_attach boolean  attach shadow virtual text automatically on setup
@@ -34,9 +37,12 @@ M.defaults = {
     enabled = true,
   },
   spacing = {
-    after_feature = 0,
-    after_task    = 0,
-    after_subtask = 0,
+    after_feature  = 0,
+    after_task     = 0,
+    after_subtask  = 0,
+    before_feature = 0,
+    before_task    = 0,
+    before_subtask = 0,
   },
   shadow = {
     auto_attach = true,
