@@ -201,20 +201,20 @@ local function get_task_range(bufnr, task_lnum)
 		::continue::
 	end
 
-	-- Extend to trailing non-fts lines before the next fts token
+	-- Extend to trailing non-fts lines before the next fts token,
+	-- but stop before blank lines or --- separators that form a feature boundary
 	local total = utils.line_count(bufnr)
 	for i = last_own + 1, total do
-		local t = parser.parse_line(utils.get_line(bufnr, i))
-		if t then
-			break
-		end
+		local line = utils.get_line(bufnr, i)
+		local t = parser.parse_line(line)
+		if t then break end
+		if not line:match("%S") then break end
+		if line:match("^%s*---%s*$") then break end
 		last_own = i
 	end
 
 	return task_lnum, last_own
 end
-
----Move a task block up by swapping it with the task above in the same feature.
 ---@param bufnr integer
 ---@param task_lnum integer  line number of the task to move
 ---@return boolean  false if already at the top of the feature
