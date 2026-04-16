@@ -189,7 +189,32 @@ describe("add", function()
         assert.equals("",                     lines[3])
         assert.equals("---",                  lines[4])
         assert.equals("## Feature 2: New",   lines[5])
-        assert.equals("## Feature 3: Beta",  lines[6])
+        assert.equals("",                     lines[6])
+        assert.equals("---",                  lines[7])
+        assert.equals("## Feature 3: Beta",  lines[8])
+      end)
+
+      it("collapses double blank before existing --- and adds --- before pushed-down feature", function()
+        local buf = make_buf({
+          "## Feature 14: boo",
+          "- [ ] 14.1 foo",
+          " - some notes",
+          "",
+          "",
+          "---",
+          "## Feature 15: bar",
+        })
+        add.add_feature(buf, 1, "bee")
+        local lines = get_lines(buf)
+        assert.equals("## Feature 14: boo",  lines[1])
+        assert.equals("- [ ] 14.1 foo",      lines[2])
+        assert.equals(" - some notes",        lines[3])
+        assert.equals("",                     lines[4])
+        assert.equals("---",                  lines[5])
+        assert.equals("## Feature 15: bee",  lines[6])
+        assert.equals("",                     lines[7])
+        assert.equals("---",                  lines[8])
+        assert.equals("## Feature 16: bar",  lines[9])
       end)
     end)
 
@@ -532,6 +557,63 @@ describe("add", function()
       assert.equals("- [ ] 1.2 Task two",       lines[6])
     end)
 
+  end)
+
+  describe("before spacing", function()
+    after_each(function() config.setup({}) end)
+
+    it("before_feature inserts blank lines before the new feature", function()
+      config.setup({ spacing = { before_feature = 2 } })
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "## Feature 2: Beta",
+      })
+      add.add_feature(buf, 1, "New")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha", lines[1])
+      assert.equals("- [ ] 1.1 Task one",  lines[2])
+      assert.equals("",                     lines[3])
+      assert.equals("",                     lines[4])
+      assert.equals("",                     lines[5])
+      assert.equals("## Feature 2: New",   lines[6])
+      assert.equals("## Feature 3: Beta",  lines[7])
+    end)
+
+    it("before_task inserts blank lines before the new task", function()
+      config.setup({ spacing = { before_task = 1 } })
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "- [ ] 1.2 Task two",
+      })
+      add.add_task(buf, 3, "New task")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",  lines[1])
+      assert.equals("- [ ] 1.1 Task one",   lines[2])
+      assert.equals("",                      lines[3])
+      assert.equals("- [ ] 1.2 New task",   lines[4])
+      assert.equals("- [ ] 1.3 Task two",   lines[5])
+    end)
+
+    it("before_subtask inserts blank lines before the new subtask", function()
+      config.setup({ spacing = { before_subtask = 1 } })
+      local buf = make_buf({
+        "## Feature 1: Alpha",
+        "- [ ] 1.1 Task one",
+        "  - [ ] 1.1.1 Sub one",
+        "  - [ ] 1.1.2 Sub two",
+      })
+      vim.bo[buf].shiftwidth = 2
+      add.add_subtask(buf, 3, "New sub")
+      local lines = get_lines(buf)
+      assert.equals("## Feature 1: Alpha",      lines[1])
+      assert.equals("- [ ] 1.1 Task one",       lines[2])
+      assert.equals("",                          lines[3])
+      assert.equals("  - [ ] 1.1.1 New sub",    lines[4])
+      assert.equals("  - [ ] 1.1.2 Sub one",    lines[5])
+      assert.equals("  - [ ] 1.1.3 Sub two",    lines[6])
+    end)
   end)
 
   describe("zero_index=true", function()

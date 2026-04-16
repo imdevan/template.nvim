@@ -344,6 +344,30 @@ describe("move_task", function()
       assert.is_false(move.move_task_up(buf, 4))
     end)
 
+    it("does not consume --- separator when moving last task up", function()
+      local buf = make_buf({
+        "## Feature 1: example",
+        "- [ ] 1.1 ipsum lorem",
+        "- [ ] 1.2 something ipsum",
+        "",
+        "---",
+        "",
+        "## Feature 2: another one",
+        "- [ ] 2.1 example asdf",
+      })
+      move.move_task_up(buf, 3)
+      assert.are.same({
+        "## Feature 1: example",
+        "- [ ] 1.1 something ipsum",
+        "- [ ] 1.2 ipsum lorem",
+        "",
+        "---",
+        "",
+        "## Feature 2: another one",
+        "- [ ] 2.1 example asdf",
+      }, vim.api.nvim_buf_get_lines(buf, 0, -1, false))
+    end)
+
   end)
 
   describe("move_task_down", function()
