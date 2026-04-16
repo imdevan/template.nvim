@@ -300,7 +300,7 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 - [ ] 13.1 example ignore task
 ```
 
-- [ ] 13.2 add feature feature_line bug
+- [x] 13.2 add feature feature_line bug
 - when adding a feature where there is a blank line followed by a feature line the feature and line get added after the existing line. 
 - consider the following
 ```
@@ -310,8 +310,10 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 ---
 ## Feature 14: fake feature
 ```
+  - [x] 13.2.1 find_feature_end tracks trailing --- separator; returns it as insert_after so new feature reuses it
+  - [x] 13.2.2 add_feature insertion logic: when insert_after is a --- line, insert feature directly after it (no new separator); otherwise build separator based on whether prev line is blank or not
 
-
+---
 ## Feature 14: Testing infrastructure
   - [x] 14.1 Choose and configure test runner
     - notes: use plenary.nvim busted wrapper; tests run in headless Neovim
@@ -340,9 +342,9 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
     - added eject_cursor() to eject.lua; dispatches to eject_feature/task/subtask based on parse_line result
     - registered TaskEject command in init.lua
     - added <leader>tee keymap
-  - [ ] 15.1.2 update readme
+  - [x] 15.1.2 update readme
 
 ## Feature 16: spacing before
-- [ ] 16.1 add spacing before config
+- [x] 16.1 add spacing before config
   - same as spacing after for all fts
-  - [ ] 16.1.1 udpate readme
+  - [x] 16.1.1 udpate readme
