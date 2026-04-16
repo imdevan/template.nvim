@@ -40,9 +40,12 @@ just test
       enabled = true,
     },
     spacing = {
-      after_feature = 0,
-      after_task    = 0,
-      after_subtask = 0,
+      after_feature  = 0,
+      after_task     = 0,
+      after_subtask  = 0,
+      before_feature = 0,
+      before_task    = 0,
+      before_subtask = 0,
     },
     shadow = {
       auto_attach = true,
