@@ -106,6 +106,9 @@ All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disa
 | `<leader>tN` | Next complete |
 | `<leader>tP` | Prev complete |
 | `<leader>tS` | Sort document |
+| `<leader>tcf` | Change current line to feature |
+| `<leader>tct` | Change current line to task |
+| `<leader>tcs` | Change current line to subtask |
 
 ## Commands
 
@@ -134,6 +137,9 @@ All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disa
 | `TaskNextComplete` | Go to the next complete (checked) task or subtask |
 | `TaskPrevComplete` | Go to the previous complete (checked) task or subtask |
 | `TaskSort` | Sort the entire document by numbers |
+| `TaskChangeToFeature` | Change the current line into a feature token |
+| `TaskChangeToTask` | Change the current line into a task token (converts a feature to a task of the preceding feature if needed) |
+| `TaskChangeToSubtask` | Change the current line into a subtask token |
 | `TaskShadowAttach` | Attach shadow virtual text (completion counts) to the current buffer |
 
 ## Custom Keymaps

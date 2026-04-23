@@ -97,6 +97,18 @@ function M.setup(opts)
 		require("task-manager.sort").sort_document_cursor()
 	end, { desc = "Sort the entire document by fts numbers" })
 
+	vim.api.nvim_create_user_command("TaskChangeToFeature", function()
+		require("task-manager.change").changeTo_feature_cursor()
+	end, { desc = "Change the current line into a feature token" })
+
+	vim.api.nvim_create_user_command("TaskChangeToTask", function()
+		require("task-manager.change").changeTo_task_cursor()
+	end, { desc = "Change the current line into a task token" })
+
+	vim.api.nvim_create_user_command("TaskChangeToSubtask", function()
+		require("task-manager.change").changeTo_subtask_cursor()
+	end, { desc = "Change the current line into a subtask token" })
+
 	vim.api.nvim_create_user_command("TaskShadowAttach", function()
 		require("task-manager.shadow").attach(vim.api.nvim_get_current_buf())
 	end, { desc = "Attach shadow virtual text (completion counts) to the current buffer" })
@@ -130,6 +142,9 @@ function M.setup(opts)
 		map("<leader>tN",  "TaskNextComplete",     "Next complete")
 		map("<leader>tP",  "TaskPrevComplete",     "Prev complete")
 		map("<leader>tS",  "TaskSort",             "Sort document")
+		map("<leader>tcf", "TaskChangeToFeature",  "Change to feature")
+		map("<leader>tct", "TaskChangeToTask",     "Change to task")
+		map("<leader>tcs", "TaskChangeToSubtask",  "Change to subtask")
 
 		local ok, wk = pcall(require, "which-key")
 		if ok then
