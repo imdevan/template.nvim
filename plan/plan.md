@@ -348,3 +348,21 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 - [x] 16.1 add spacing before config
   - same as spacing after for all fts
   - [x] 16.1.1 udpate readme
+
+## Feature 17: Change to FTS
+- [x] 17.1 3 separate commands to change current line into a feature, task, or subtask
+  - [x] 17.1.1 changeTo_feature: converts plain/task/subtask line to feature, renumbers below
+  - [x] 17.1.2 changeTo_task: converts plain/subtask to task; converts feature to task of preceding feature, re-parents children as subtasks
+  - [x] 17.1.3 changeTo_subtask: converts plain/task to subtask, derives indent from parent task
+- if the line is a feature line that user wants converted to a task or sub task: 
+  - change the feature a task of the proceeding feature
+  - pull up tasks bellow to be numbered as a child of the proceeding feature
+  - pull up remaining features as if the feature was removed
+- handle different cases involving FTS renumbering as needed
+- [x] 17.2 add to keymaps
+  - <leader>tcf / <leader>tct / <leader>tcs registered in init.lua
+- [x] 17.3 add to docs
+  - TaskChangeToFeature, TaskChangeToTask, TaskChangeToSubtask in README keymaps and commands tables
+- [x] 17.4 write tests
+  - tests/change_spec.lua: 17 tests covering all three functions and edge cases
+
