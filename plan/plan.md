@@ -366,3 +366,15 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 - [x] 17.4 write tests
   - tests/change_spec.lua: 17 tests covering all three functions and edge cases
 
+## Feature 18: hide completed
+- [x] 18.1 command to hide completed task
+  - should not delete the items. just hide completed items and features
+  - only show uncompleted features and tasks
+  - [x] 18.1.1 create lua/task-manager/hide.lua with hidden_ranges logic and toggle_hide_completed
+  - [x] 18.1.2 register TaskHideCompleted command in init.lua
+  - [x] 18.1.3 add <leader>th keymap in init.lua
+  - [x] 18.1.4 write tests/hide_spec.lua (6 tests, all passing)
+- [x] 18.2 add to keymaps
+  - <leader>th 
+
+

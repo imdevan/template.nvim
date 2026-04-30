@@ -113,6 +113,10 @@ function M.setup(opts)
 		require("task-manager.shadow").attach(vim.api.nvim_get_current_buf())
 	end, { desc = "Attach shadow virtual text (completion counts) to the current buffer" })
 
+	vim.api.nvim_create_user_command("TaskHideCompleted", function()
+		require("task-manager.hide").toggle_hide_completed()
+	end, { desc = "Toggle hiding completed tasks and features" })
+
 	local cfg = require("task-manager.config").options
 	if cfg.keymaps.enabled then
 		local map = function(lhs, cmd, desc)
@@ -145,6 +149,7 @@ function M.setup(opts)
 		map("<leader>tcf", "TaskChangeToFeature",  "Change to feature")
 		map("<leader>tct", "TaskChangeToTask",     "Change to task")
 		map("<leader>tcs", "TaskChangeToSubtask",  "Change to subtask")
+		map("<leader>th",  "TaskHideCompleted",    "Toggle hide completed")
 
 		local ok, wk = pcall(require, "which-key")
 		if ok then
