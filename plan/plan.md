@@ -377,4 +377,9 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
 - [x] 18.2 add to keymaps
   - <leader>th 
 
-
+## Feature 19: show remaining
+- [x] 19.1 change all of the hide completed wording to show remaining
+  - renamed hide_completed → show_remaining, toggle_hide_completed → toggle_show_remaining in hide.lua
+  - renamed TaskHideCompleted → TaskShowRemaining in init.lua and README
+- [x] 19.2 change hide completed/show remaining keymap to <leader>ts
+  - changed <leader>tr → <leader>ts in init.lua and README
