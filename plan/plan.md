@@ -383,3 +383,33 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
   - renamed TaskHideCompleted → TaskShowRemaining in init.lua and README
 - [x] 19.2 change hide completed/show remaining keymap to <leader>ts
   - changed <leader>tr → <leader>ts in init.lua and README
+
+## Feature 20: kick FTS
+- [x] 20.1 add kicked variable to config
+  - file name of where to put kicked files
+  - ? relative to project root or plan.md?
+  - should point to singular file. if no '.md' provided assume it is pointing to a .md file
+  - [x] 20.1.1 update config init
+  - [x] 20.1.2 update config example
+  - [x] 20.1.3 update docs
+- [x] 20.2 add command and keymap <leader>tk 
+  - [x] 20.2.1 create lua/task-manager/kick.lua
+    - copy FTS to kicked md file
+    - keep the number and if a task or sub task put under matching feature in kicked. 
+      - if there is no feature for task or sub task copy feature
+      - if there is a feature put the task or sub task under that feature
+    - remove FTS from current location (same as remove command)
+  - [x] 20.2.2 register TaskKick command and <leader>tk keymap in init.lua
+  - [x] 20.2.3 write tests/kick_spec.lua (9 tests, all passing)
+- [x] 20.3 update docs
+  - [x] 20.3.1 add `<leader>tk` to keymaps table
+  - [x] 20.3.2 add `TaskKick` to commands table
+
+## Feature 21: renumber
+- [x] 21.1 renumber current file fts in place
+  - keep FTS where they are. renumber such that all tasks are in order from 1, or (0 if there is currently a 0 in the buffer)
+  - [x] 21.1.1 add command TaskRenumber and keymap <leader>tR
+    - added renumber_cursor() to renumber.lua (auto-detects 0-based from buffer)
+  - [x] 21.1.2 update docs
+    - added `<leader>tR` to keymaps table
+    - added `TaskRenumber` to commands table
