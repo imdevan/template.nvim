@@ -57,7 +57,7 @@ end
 
 ---Open a scratch buffer showing only incomplete tasks.
 ---@param bufnr integer
-function M.hide_completed(bufnr)
+function M.show_remaining(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
   local lines, line_map = visible_lines(bufnr)
@@ -103,7 +103,7 @@ function M.show_all(bufnr)
 end
 
 ---Toggle the incomplete-only view.
-function M.toggle_hide_completed()
+function M.toggle_show_remaining()
   local bufnr = vim.api.nvim_get_current_buf()
   -- If we're currently in a scratch buffer, find the source.
   for src, scr in pairs(_scratch) do
@@ -115,7 +115,7 @@ function M.toggle_hide_completed()
   if _scratch[bufnr] then
     M.show_all(bufnr)
   else
-    M.hide_completed(bufnr)
+    M.show_remaining(bufnr)
   end
 end
 

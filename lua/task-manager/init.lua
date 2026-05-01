@@ -113,9 +113,9 @@ function M.setup(opts)
 		require("task-manager.shadow").attach(vim.api.nvim_get_current_buf())
 	end, { desc = "Attach shadow virtual text (completion counts) to the current buffer" })
 
-	vim.api.nvim_create_user_command("TaskHideCompleted", function()
-		require("task-manager.hide").toggle_hide_completed()
-	end, { desc = "Toggle hiding completed tasks and features" })
+	vim.api.nvim_create_user_command("TaskShowRemaining", function()
+		require("task-manager.show_remaining").toggle_show_remaining()
+	end, { desc = "Toggle show remaining (incomplete) tasks" })
 
 	local cfg = require("task-manager.config").options
 	if cfg.keymaps.enabled then
@@ -149,7 +149,7 @@ function M.setup(opts)
 		map("<leader>tcf", "TaskChangeToFeature",  "Change to feature")
 		map("<leader>tct", "TaskChangeToTask",     "Change to task")
 		map("<leader>tcs", "TaskChangeToSubtask",  "Change to subtask")
-		map("<leader>th",  "TaskHideCompleted",    "Toggle hide completed")
+		map("<leader>ts",  "TaskShowRemaining",    "Show remaining tasks")
 
 		local ok, wk = pcall(require, "which-key")
 		if ok then

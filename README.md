@@ -109,7 +109,7 @@ All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disa
 | `<leader>tcf` | Change current line to feature |
 | `<leader>tct` | Change current line to task |
 | `<leader>tcs` | Change current line to subtask |
-| `<leader>th` | Toggle hide completed tasks/features |
+| `<leader>ts` | Show remaining (incomplete) tasks |
 
 ## Commands
 
@@ -142,7 +142,7 @@ All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disa
 | `TaskChangeToTask` | Change the current line into a task token (converts a feature to a task of the preceding feature if needed) |
 | `TaskChangeToSubtask` | Change the current line into a subtask token |
 | `TaskShadowAttach` | Attach shadow virtual text (completion counts) to the current buffer |
-| `TaskHideCompleted` | Toggle hiding completed tasks and features (uses folds, does not delete) |
+| `TaskShowRemaining` | Show only remaining (incomplete) tasks in a scratch buffer — press `<cr>`/`i`/`e` to jump to a task, `q` to return |
 
 ## Custom Keymaps
 

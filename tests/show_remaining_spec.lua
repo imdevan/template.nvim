@@ -1,4 +1,4 @@
-local hide   = require("task-manager.hide")
+local hide   = require("task-manager.show_remaining")
 local config = require("task-manager.config")
 
 local function make_buf(lines)
