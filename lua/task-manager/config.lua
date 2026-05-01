@@ -7,6 +7,7 @@ local M = {}
 ---@field shadow       TaskManagerShadow
 ---@field feature_line boolean  insert a --- line between features on add and sort
 ---@field zero_index   boolean  start feature/task/subtask numbering at 0 instead of 1
+---@field kicked       string   file name (relative to project root) for kicked items; .md extension assumed if omitted
 
 ---@class TaskManagerTokens
 ---@field feature string  template for feature header lines; use {feature} and {name}
@@ -49,6 +50,7 @@ M.defaults = {
   },
   feature_line = false,
   zero_index   = false,
+  kicked       = "kicked",
 }
 
 ---@type TaskManagerConfig

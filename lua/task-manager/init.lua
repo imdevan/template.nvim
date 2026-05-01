@@ -117,6 +117,10 @@ function M.setup(opts)
 		require("task-manager.show_remaining").toggle_show_remaining()
 	end, { desc = "Toggle show remaining (incomplete) tasks" })
 
+	vim.api.nvim_create_user_command("TaskKick", function()
+		require("task-manager.kick").kick_cursor()
+	end, { desc = "Kick the FTS item under the cursor to the kicked file" })
+
 	local cfg = require("task-manager.config").options
 	if cfg.keymaps.enabled then
 		local map = function(lhs, cmd, desc)
@@ -150,6 +154,7 @@ function M.setup(opts)
 		map("<leader>tct", "TaskChangeToTask",     "Change to task")
 		map("<leader>tcs", "TaskChangeToSubtask",  "Change to subtask")
 		map("<leader>ts",  "TaskShowRemaining",    "Show remaining tasks")
+		map("<leader>tk",  "TaskKick",             "Kick FTS item to kicked file")
 
 		local ok, wk = pcall(require, "which-key")
 		if ok then
