@@ -150,4 +150,46 @@ function M.renumber(bufnr)
   end
 end
 
+---Renumber the current buffer in place, auto-detecting zero-index from the
+---buffer's existing token numbers (uses 0-based if any token number is 0).
+function M.renumber_cursor()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local index = parser.build_index(bufnr)
+
+  -- Detect zero-index: any token with fn/tn/sn == 0
+  local zero = false
+  for _, t in ipairs(index) do
+    if (t.fn and t.fn == 0) or (t.tn and t.tn == 0) or (t.sn and t.sn == 0) then
+      zero = true
+      break
+    end
+  end
+
+  local start    = zero and 0 or 1
+  local feat_seq = start - 1
+  local task_seq = start - 1
+  local sub_seq  = start - 1
+  local cur_fn   = nil
+  local cur_tn   = nil
+
+  for _, t in ipairs(index) do
+    if t.type == "feature" then
+      feat_seq = feat_seq + 1
+      task_seq = start - 1
+      sub_seq  = start - 1
+      cur_fn   = feat_seq
+      cur_tn   = nil
+      rewrite(bufnr, t.lnum, t, cur_fn)
+    elseif t.type == "task" then
+      task_seq = task_seq + 1
+      sub_seq  = start - 1
+      cur_tn   = task_seq
+      rewrite(bufnr, t.lnum, t, cur_fn, cur_tn)
+    elseif t.type == "subtask" then
+      sub_seq = sub_seq + 1
+      rewrite(bufnr, t.lnum, t, cur_fn, cur_tn, sub_seq)
+    end
+  end
+end
+
 return M

@@ -52,6 +52,7 @@ just test
     },
     feature_line = false,
     zero_index   = false,
+    kicked       = "kicked",
   },
 }
 ```
@@ -76,6 +77,10 @@ When `true`, feature, task, and subtask numbering starts at `0` instead of `1`. 
 - [ ] 0.0 Install dependencies
   - [ ] 0.0.0 Add to package.json
 ```
+
+### `kicked`
+
+File name (relative to the project root) for items moved by the kick command. If no `.md` extension is provided, `.md` is assumed. Defaults to `"kicked"` (i.e., `kicked.md`).
 
 ## Keymaps
 
@@ -110,6 +115,8 @@ All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disa
 | `<leader>tct` | Change current line to task |
 | `<leader>tcs` | Change current line to subtask |
 | `<leader>ts` | Show remaining (incomplete) tasks |
+| `<leader>tk` | Kick (move) FTS item to kicked file |
+| `<leader>tR` | Renumber FTS tokens in place |
 
 ## Commands
 
@@ -143,6 +150,8 @@ All keymaps are prefixed with `<leader>t`. Set `keymaps.enabled = false` to disa
 | `TaskChangeToSubtask` | Change the current line into a subtask token |
 | `TaskShadowAttach` | Attach shadow virtual text (completion counts) to the current buffer |
 | `TaskShowRemaining` | Show only remaining (incomplete) tasks in a scratch buffer — press `<cr>`/`i`/`e` to jump to a task, `q` to return |
+| `TaskKick` | Move the FTS item under the cursor to the kicked file (copies it with its parent feature context, then removes it from the current buffer) |
+| `TaskRenumber` | Renumber all FTS tokens in the current buffer in place (auto-detects 0-based vs 1-based from existing numbers) |
 
 ## Custom Keymaps
 

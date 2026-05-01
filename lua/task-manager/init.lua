@@ -121,6 +121,10 @@ function M.setup(opts)
 		require("task-manager.kick").kick_cursor()
 	end, { desc = "Kick the FTS item under the cursor to the kicked file" })
 
+	vim.api.nvim_create_user_command("TaskRenumber", function()
+		require("task-manager.renumber").renumber_cursor()
+	end, { desc = "Renumber all FTS tokens in the current buffer in place" })
+
 	local cfg = require("task-manager.config").options
 	if cfg.keymaps.enabled then
 		local map = function(lhs, cmd, desc)
@@ -155,6 +159,7 @@ function M.setup(opts)
 		map("<leader>tcs", "TaskChangeToSubtask",  "Change to subtask")
 		map("<leader>ts",  "TaskShowRemaining",    "Show remaining tasks")
 		map("<leader>tk",  "TaskKick",             "Kick FTS item to kicked file")
+		map("<leader>tR",  "TaskRenumber",         "Renumber FTS in place")
 
 		local ok, wk = pcall(require, "which-key")
 		if ok then
