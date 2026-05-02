@@ -413,3 +413,10 @@ subtask = "- [ ] {feature}.{task}.{subtask}) {name}",
   - [x] 21.1.2 update docs
     - added `<leader>tR` to keymaps table
     - added `TaskRenumber` to commands table
+
+## Feature 22: open spec
+- [x] 22.1 add spec to config
+- default globs to  root of project in plan.md
+- can point to a file or directory
+  - [x] 22.1.1 update docs
+- [ ] 22.2 add keymap ^T opens task file for project from any file in project
