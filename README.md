@@ -53,6 +53,7 @@ just test
     feature_line = false,
     zero_index   = false,
     kicked       = "kicked",
+    spec          = "plan.md",
   },
 }
 ```
@@ -81,6 +82,10 @@ When `true`, feature, task, and subtask numbering starts at `0` instead of `1`. 
 ### `kicked`
 
 File name (relative to the project root) for items moved by the kick command. If no `.md` extension is provided, `.md` is assumed. Defaults to `"kicked"` (i.e., `kicked.md`).
+
+### `spec`
+
+Path to the PRD (product requirements document) file or directory, relative to the project root. Can point to a specific file or a directory. Defaults to `"plan.md"`.
 
 ## Keymaps
 
