@@ -3,7 +3,7 @@
 
 local root = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h")
 
--- Add plugin root so `require("task-manager")` resolves
+-- Add plugin root so `require("template")` resolves
 vim.opt.rtp:prepend(root)
 
 -- Resolve plenary: prefer a local vendor copy, fall back to the system path
