@@ -55,6 +55,12 @@ rename new_name:
         echo "$result"
     }
 
+    to_snake_case() {
+        local input="$1"
+        local temp="${input//-/_}"
+        echo "$temp"
+    }
+
     OLD_FILE="$(find plugin -maxdepth 1 -name '*.lua' | head -n1 || true)"
     if [ -z "$OLD_FILE" ]; then
         OLD_NAME="template"
@@ -65,6 +71,8 @@ rename new_name:
     NEW_NAME="{{new_name}}"
     OLD_CAMEL="$(to_camel_case "$OLD_NAME")"
     NEW_CAMEL="$(to_camel_case "$NEW_NAME")"
+    OLD_SNAKE="$(to_snake_case "$OLD_NAME")"
+    NEW_SNAKE="$(to_snake_case "$NEW_NAME")"
 
     if [ "$OLD_NAME" = "$NEW_NAME" ]; then
         echo "Already named '$NEW_NAME' — nothing to do"
@@ -80,8 +88,8 @@ rename new_name:
     echo "Renaming '$OLD_NAME' ($OLD_CAMEL) -> '$NEW_NAME' ($NEW_CAMEL)"
 
     # Replace occurrences in all files
-    (grep -rlZ --exclude-dir=.git --exclude-dir=vendor -e "$OLD_NAME" -e "$OLD_CAMEL" . || true) | while IFS= read -r -d '' f; do
-        sed -i "s/${OLD_CAMEL}/${NEW_CAMEL}/g; s/${OLD_NAME}/${NEW_NAME}/g" "$f"
+    (grep -rlZ --exclude-dir=.git --exclude-dir=vendor -e "$OLD_NAME" -e "$OLD_CAMEL" -e "loaded_${OLD_SNAKE}" . || true) | while IFS= read -r -d '' f; do
+        sed -i "s/${OLD_CAMEL}/${NEW_CAMEL}/g; s/loaded_${OLD_SNAKE}/loaded_${NEW_SNAKE}/g; s/${OLD_NAME}/${NEW_NAME}/g" "$f"
     done
 
     # Rename plugin file
