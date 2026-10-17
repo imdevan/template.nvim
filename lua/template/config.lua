@@ -6,11 +6,12 @@ local M = {}
 ---@class TemplateKeymaps
 ---@field enabled boolean  master switch for all keymaps
 
-M.defaults = {
-  keymaps = {
-    enabled = true,
-  },
-}
+  M.defaults = {
+    keymaps = {
+      enabled = true,
+      prefix = "",
+    },
+  }
 
 ---@type TemplateConfig
 M.options = vim.tbl_deep_extend("force", {}, M.defaults)

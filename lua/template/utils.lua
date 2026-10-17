@@ -1,4 +1,18 @@
+
+
+
 local M = {}
+
+---Create a normal mode keymap with description
+---@param lhs string Left-hand side of the mapping
+---@param cmd string Command to execute
+---@param desc string Description for which-key
+function M.map(mode, key, cmd, desc)
+  local cfg = require("template.config").options
+  local prefix = cfg.keymaps.prefix or ""
+  local lhs = "<leader>" .. prefix .. key
+  vim.keymap.set(mode, lhs, "<cmd>" .. cmd .. "<cr>", { desc = desc })
+end
 
 ---Return the content of line n (1-indexed) in the given buffer
 ---@param bufnr integer
@@ -35,3 +49,5 @@ function M.set_cursor_line(n)
   local col = vim.api.nvim_win_get_cursor(0)[2]
   vim.api.nvim_win_set_cursor(0, { n, col })
 end
+
+return M
